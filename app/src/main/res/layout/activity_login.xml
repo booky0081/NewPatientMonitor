@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/mahidolbackground"
+    android:alpha="0.9">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/loginLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        >
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/userNameEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="20"
+            android:inputType="text"
+            android:textSize="14sp"
+            android:layout_margin="16dp"
+            android:hint="ENTER USERNAME"
+            android:drawableLeft="@drawable/ic_account_box_black_24dp"
+            android:drawablePadding="8dp"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="20"
+            android:inputType="textPassword"
+            android:textSize="14sp"
+            android:layout_margin="16dp"
+            android:drawablePadding="8dp"
+            android:drawableLeft="@drawable/ic_lock_black_24dp"
+            android:hint="ENTER PASSWORD" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/signinButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:textStyle="bold"
+            android:text="SIGN IN"
+            android:textAlignment="center"
+            android:backgroundTint="@color/skyBlue"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:gravity="left|center"
+
+            >
+
+        </androidx.appcompat.widget.AppCompatButton>
+
+
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>

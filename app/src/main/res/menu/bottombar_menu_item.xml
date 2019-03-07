@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/black"
+    >
+    <item
+        android:id="@+id/connectMenuButton"
+        android:color="@color/colorPrimary"
+
+        android:title="CONNECT" />
+    <item
+        android:id="@+id/historyMenuButton"
+        android:color="@android:color/holo_green_dark"
+
+        android:title="HISTORY" />
+
+    <item
+        android:id="@+id/signoutMenuButton"
+        android:color="#FF5252"
+        android:title="SIGN OUT" />
+</menu>
