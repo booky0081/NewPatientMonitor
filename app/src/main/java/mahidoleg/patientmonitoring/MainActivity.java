@@ -1,18 +1,14 @@
 package mahidoleg.patientmonitoring;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.google.android.flexbox.FlexDirection;
-import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.button.MaterialButton;
 import com.nightonke.boommenu.BoomButtons.HamButton;
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
 import com.nightonke.boommenu.BoomMenuButton;
@@ -20,18 +16,38 @@ import com.nightonke.boommenu.BoomMenuButton;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.appcompat.app.AlertDialog;
+import Database.DataBaseHandler;
+import Dialog.ProfileManagement;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class MainActivity extends AppCompatActivity  implements OnBMClickListener{
 
 
+    @BindView(R.id.bmb)
+    BoomMenuButton bmb;
+
+    @BindView(R.id.chart)
+    LineChart chart;
+
+    @BindView(R.id.main_menu_toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.blood_pressure_manage_button)
+    MaterialButton bloodPressureManageButton;
+
+    private Unbinder unbinder;
 
     private String[] menuButton = {"LOGIN","DISCLAIMER","MORE"};
-    private BoomMenuButton bmb;
+
     private static final int LOGININTENT = 1;
+
     private static boolean loggedIn  = false;
+
+    private ProfileManagement profileManagement;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -39,12 +55,11 @@ public class MainActivity extends AppCompatActivity  implements OnBMClickListene
 
         setContentView(R.layout.main_menu);
 
-        bmb =  findViewById(R.id.bmb);
-
-        Toolbar toolbar =  findViewById(R.id.main_menu_toolbar);
+        unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
 
+        DataBaseHandler.getInstance(this);
 
         for (int i = 0; i < bmb.getPiecePlaceEnum().pieceNumber(); i++) {
             HamButton.Builder builder = new HamButton.Builder()
@@ -54,63 +69,19 @@ public class MainActivity extends AppCompatActivity  implements OnBMClickListene
             bmb.addBuilder(builder);
         }
 
-        FlexboxLayout flexboxLayout = (FlexboxLayout) findViewById(R.id.blood_pressure_layout_details);
-        flexboxLayout.setFlexDirection(FlexDirection.ROW);
-        LineChart chart = (LineChart) findViewById(R.id.chart);
-        List<Entry> entries = new ArrayList<Entry>();
-        for(int i= 0 ;i<100;i++){
-            entries.add(new Entry(i,i));
-        }
+        this.SetUpSamepleChart();
 
-        LineDataSet dataSet = new LineDataSet(entries, "test");
-        LineData lineData = new LineData(dataSet);
-        chart.setData(lineData);
-        chart.invalidate();
-        Switch bloodPressureSwitch =  findViewById(R.id.blood_pressure_device);
+        this.profileManagement = new ProfileManagement(this);
+
+        bloodPressureManageButton.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+                profileManagement.Show();
+          }
+      });
 
 
-        bloodPressureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if(isChecked){
-                    final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.select_dialog_singlechoice);
-                    arrayAdapter.add("Hardik");
-                    arrayAdapter.add("Archit");
-                    arrayAdapter.add("Jignesh");
-                    arrayAdapter.add("Umang");
-                    arrayAdapter.add("Gatti");
-
-                    AlertDialog.Builder builderSingle = new AlertDialog.Builder(MainActivity.this);
-                    builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String strName = arrayAdapter.getItem(which);
-                            AlertDialog.Builder builderInner = new AlertDialog.Builder(MainActivity.this);
-                            builderInner.setMessage(strName);
-                            builderInner.setTitle("Your Selected Item is");
-                            builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            builderInner.show();
-                        }
-                    });
-                    builderSingle.show();
-
-                }
-            }
-        });
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -119,12 +90,20 @@ public class MainActivity extends AppCompatActivity  implements OnBMClickListene
 
     @Override
     protected void onResume() {
+
         super.onResume();
+
         if(loggedIn) {
             HamButton.Builder builder = (HamButton.Builder) bmb.getBuilder(0);
             builder.normalText("LOGOUT");
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 
     @Override
@@ -164,6 +143,18 @@ public class MainActivity extends AppCompatActivity  implements OnBMClickListene
 
         Intent loginIntent = new Intent(this,LoginActivity.class);
         startActivityForResult(loginIntent, LOGININTENT);
+    }
+
+    private void SetUpSamepleChart(){
+        List<Entry> entries = new ArrayList<>();
+        for(int i= 0 ;i<100;i++){
+            entries.add(new Entry(i,i));
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "test");
+        LineData lineData = new LineData(dataSet);
+        chart.setData(lineData);
+        chart.invalidate();
     }
 
     @Override
