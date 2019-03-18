@@ -284,8 +284,42 @@ public class ProfileManagement {
         this.dialog.show();
     }
 
-    public  synchronized  void Show(){
 
+    public void Show(long patientId ,ProfileManagementInterface profileManagementInterface){
+
+        ReloadPatientList();
+
+        ReloadHospitalList();
+
+        this.profileManagementInterface = profileManagementInterface;
+
+        for(int  i = 0;i<patienList.size();i++){
+
+            if(patienList.get(i).getId()== patientId){
+
+                patienSpinner.setSelection(i+1);
+
+                this.selectedPatientId = patienList.get(i).getId();
+
+                long hospitalId = patienList.get(i).getHospitalId();
+
+                for(int j =0;j< hospitalList.size();j++){
+
+                    if(hospitalList.get(j).getId() == hospitalId){
+
+                        hospitalSpinner.setSelection(j+1);
+                    }
+                }
+
+                this.selectedHospitalId = patienList.get(i).getId();
+
+            }
+        }
+
+        this.dialog.show();
+    }
+
+    public  synchronized  void Show(){
 
         ReloadPatientList();
 

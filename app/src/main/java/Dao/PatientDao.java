@@ -21,4 +21,6 @@ public interface PatientDao {
    @Query("SELECT * FROM Patient")
    List<PatientModel> getPatients();
 
+   @Query("SELECT * FROM Patient WHERE id = :id")
+    PatientModel getPatients(long id);
 }

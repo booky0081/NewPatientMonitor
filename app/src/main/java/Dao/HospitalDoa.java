@@ -24,4 +24,7 @@ public interface HospitalDoa {
     @Query("SELECT * FROM Hospital")
     List<HospitalModel> getHospitals();
 
+    @Query("SELECT * FROM Hospital where id = :id")
+    HospitalModel getHospital(long id);
+
 }
