@@ -22,13 +22,13 @@ public class PatientModel {
 
     @ColumnInfo(name = "hospital_id")
 
-    private  int hospitalId;
+    private  long hospitalId;
 
-    public int getHospitalId() {
+    public long getHospitalId() {
         return hospitalId;
     }
 
-    public void setHospitalId(int hospitalId) {
+    public void setHospitalId(long hospitalId) {
         this.hospitalId = hospitalId;
     }
 

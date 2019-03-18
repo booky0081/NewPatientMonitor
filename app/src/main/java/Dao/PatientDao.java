@@ -13,7 +13,7 @@ import androidx.room.Query;
 public interface PatientDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertUsers(PatientModel... patientModels);
+    long insertUser(PatientModel patientModel);
 
    @Delete
    void delete(PatientModel patientModel);

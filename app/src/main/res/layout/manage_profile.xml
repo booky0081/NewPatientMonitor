@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_margin="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:flexDirection="column"
+        app:flexWrap="wrap"
+        app:justifyContent="space_evenly"
+        app:alignContent="stretch">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/manage_profile_patient_name_text_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:ems="20"
+            android:hint="Patient Name"/>
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/manage_profile_patient_name_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </androidx.appcompat.widget.AppCompatSpinner>
+
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/manage_profile_hospital_name_text_field"
+        android:layout_margin="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="20"
+        android:hint="Hospital ID"/>
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/manage_profile_hospital_name_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+    </androidx.appcompat.widget.AppCompatSpinner>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/manage_profile_hospital_name_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:ems="8"
+        android:textStyle="bold"
+        android:text="SAVE"/>
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+
+</LinearLayout>
