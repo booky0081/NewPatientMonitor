@@ -81,7 +81,6 @@ public class ProfileManagement {
 
         patienSpinner = view.findViewById(R.id.manage_profile_patient_name_spinner);
 
-
         hospitalSpinner.setAdapter(new HospitalModelAdapter(view.getContext(),android.R.layout.simple_spinner_dropdown_item,hospitalList));
 
         hospitalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -196,14 +195,12 @@ public class ProfileManagement {
 
                    }
 
-                   if(selectedPatientId > 0){
+                   if(profileManagementInterface!=null) {
 
-                       if(profileManagementInterface!=null){
-
-                           profileManagementInterface.onComplete(selectedHospitalId);
-                       }
-
+                       profileManagementInterface.onComplete(selectedHospitalId);
                    }
+
+                   dialog.dismiss();
 
 
             }

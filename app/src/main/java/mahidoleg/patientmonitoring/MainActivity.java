@@ -1,14 +1,8 @@
 package mahidoleg.patientmonitoring;
 
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -23,14 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Database.DataBaseHandler;
+import Dialog.BluetoothDialog;
 import Dialog.ProfileManagement;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import me.aflak.bluetooth.Bluetooth;
-import me.aflak.bluetooth.DeviceCallback;
 
 public class MainActivity extends AppCompatActivity implements OnBMClickListener {
 
@@ -47,6 +40,10 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
     @BindView(R.id.blood_pressure_manage_button)
     MaterialButton bloodPressureManageButton;
 
+    @BindView(R.id.blood_pressure_connect_button)
+
+    MaterialButton bloodPressureConnectButton;
+
     private Unbinder unbinder;
 
     private String[] menuButton = {"LOGIN", "DISCLAIMER", "MORE"};
@@ -56,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
     private static boolean loggedIn = false;
 
     private ProfileManagement profileManagement;
+
+    private BluetoothDialog bluetoothDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
         this.profileManagement = new ProfileManagement(this);
 
+
         bloodPressureManageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +89,15 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
             }
         });
 
+        this.bluetoothDialog = new BluetoothDialog(this);
+
+        this.bloodPressureConnectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bluetoothDialog.Show();
+            }
+        });
 
     }
 

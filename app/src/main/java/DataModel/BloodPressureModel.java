@@ -16,21 +16,33 @@ public class BloodPressureModel {
 
     @ColumnInfo(name = "device_id")
 
-    private int deviceId;
+    private String deviceId;
 
     public int getId() {
         return id;
+    }
+
+    public long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(long patientId) {
+        this.patientId = patientId;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public int getDeviceId() {
+    private long patientId ;
+
+
+
+    public String getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(int deviceId) {
+    public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
 }

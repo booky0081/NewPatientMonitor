@@ -6,8 +6,6 @@
     android:layout_height="wrap_content">
 
 
-
-
     <com.google.android.flexbox.FlexboxLayout
         android:layout_margin="8dp"
         android:layout_width="wrap_content"
