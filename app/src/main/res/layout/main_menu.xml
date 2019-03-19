@@ -200,7 +200,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:ems="10"
+                android:ems="5"
                 android:text = "Name :"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -213,7 +213,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
+                android:ems="5"
                 android:textSize="14sp"
                 android:text = "Hospital Id : "/>
             <TextView
@@ -228,7 +228,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ems="10"
+                    android:ems="5"
                     android:textSize="14sp"
                     android:text = "Connected To : "/>
                 <TextView
