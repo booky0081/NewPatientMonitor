@@ -2,16 +2,17 @@ package Dialog;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import BluetoothParser.BaseParser;
 import androidx.appcompat.app.AlertDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,8 +20,9 @@ import butterknife.Unbinder;
 import mahidoleg.patientmonitoring.R;
 import me.aflak.bluetooth.Bluetooth;
 import me.aflak.bluetooth.DeviceCallback;
+import me.aflak.bluetooth.DiscoveryCallback;
 
-public class BluetoothDialog implements DeviceCallback {
+public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
     @BindView(R.id.state_text)
     TextView stateText;
@@ -37,17 +39,21 @@ public class BluetoothDialog implements DeviceCallback {
 
     private AlertDialog dialog;
 
-    private Bluetooth pairedBluetooth;
-
     private ArrayAdapter<String> adapter;
 
-    private List<BluetoothDevice> connectedDevices;
+    private static CopyOnWriteArrayList<BluetoothDevice> bluetoothDevices;
 
-    private List<Bluetooth> connectedBluetooths;
+    private BluetoothDevice toBeConnected;
 
-    private BaseParser paser;
+    private static CopyOnWriteArrayList<BluetoothDevice> connectedDevices;
 
-    public BluetoothDialog(Activity activity, BaseParser parser){
+    private  Bluetooth bluetooth;
+
+    private boolean closeable = true;
+
+
+    private Dialog.DialogInterface dialogInterface;
+    public  BluetoothDialog(Activity activity, Dialog.DialogInterface dialogInterface){
 
         this.activity = activity;
 
@@ -55,21 +61,130 @@ public class BluetoothDialog implements DeviceCallback {
 
         dialog = new AlertDialog.Builder(activity).setView(view).create();
 
+        this.dialogInterface = dialogInterface;
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                    if(closeable){
+
+                        dialog.dismiss();
+                    }
+            }
+        });
+
         unbinder = ButterKnife.bind(view);
 
         stateText = view.findViewById(R.id.state_text);
 
         deviceList = view.findViewById(R.id.device_list);
 
+        if(bluetoothDevices==null) {
+            bluetoothDevices = new CopyOnWriteArrayList<>();
+        }
+
+        if(connectedDevices == null){
+
+            connectedDevices = new CopyOnWriteArrayList<>();
+        }
+
+        deviceList.setAdapter(new DeviceListAdapter(activity,R.layout.list_view,bluetoothDevices));
+
+        deviceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if(position< 0 || bluetooth==null){
+                    return;
+                }
+
+                BluetoothDevice device = bluetoothDevices.get(position);
+
+                Enable(false);
+
+                if(bluetooth.getPairedDevices().contains(device)){
+
+                    bluetooth.connectToAddress(device.getAddress());
+
+
+
+                }else{
+
+                    toBeConnected = device;
+                    bluetooth.pair(device);
+
+                }
+            }
+        });
         refreshButton = view.findViewById(R.id.refresh_button);
 
-        this.paser = parser;
+
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Refresh();
+
+            }
+        });
+
+        bluetooth = new Bluetooth(activity);
+
+        Log.d("base Handler",bluetooth.toString());
+        dialog.setTitle("Connect to Devices");
+
+        dialog.setCanceledOnTouchOutside(false);
+
+        dialog.setCancelable(false);
 
     }
 
+    private synchronized  static void AddConnectedDevice(BluetoothDevice device){
+
+        if(bluetoothDevices.contains(device)){
+            bluetoothDevices.remove(device);
+        }
+        connectedDevices.add(device);
+    }
+
+    private synchronized  static void RemoveConnectedDevice(BluetoothDevice device){
+
+        connectedDevices.remove(device);
+    }
+
+    private void Refresh(){
+
+        bluetooth.startScanning();
+
+        bluetoothDevices.clear();
+
+
+
+    }
+    private void Enable(boolean enable){
+
+        if(dialog.isShowing()) {
+
+            this.refreshButton.setEnabled(enable);
+
+            this.deviceList.setEnabled(enable);
+
+
+            closeable = enable;
+        }
+
+
+    }
     public void Show(){
 
         dialog.show();
+        Refresh();
+    }
+
+    public void dismiss(){
+
+        dialog.dismiss();
     }
 
     private void setText(final String txt) {
@@ -78,59 +193,35 @@ public class BluetoothDialog implements DeviceCallback {
 
     }
 
-    private void addDevicesToList(){
-
-         List<String> names = new ArrayList<String>();
-
-        for (BluetoothDevice d : pairedBluetooth.getPairedDevices()){
-            if (connectedDevices.contains(d)) {
-                names.add(d.getName() + " - Connected");
-            }
-            else
-                names.add(d.getName());
-        }
-
-        adapter.clear();
-
-        adapter.addAll(names);
-
-        adapter.notifyDataSetChanged();
-    }
     public void Start(){
 
-        for (Bluetooth b : connectedBluetooths){
-            b.onStart();
-            b.enable();
-        }
-        addDevicesToList();
+        bluetooth.onStart();
     }
 
     public void Stop(){
 
-        pairedBluetooth.onStop();
+        bluetooth.onStop();
 
-        for (Bluetooth b : connectedBluetooths){
+        unbinder.unbind();
 
-            b.onStop();
-
-        }
     }
+
     @Override
     public void onDeviceConnected(BluetoothDevice device) {
 
-        setText("Connected to " + device.getName());
 
-        connectedDevices.add(device);
+        AddConnectedDevice(device);
 
-        addDevicesToList();
+        dialogInterface.onConnected(device.getName());
+
     }
 
     @Override
     public void onDeviceDisconnected(BluetoothDevice device, String message) {
 
-        connectedDevices.remove(device);
+        RemoveConnectedDevice(device);
 
-        addDevicesToList();
+        dialogInterface.onDisconnected();
 
         //setText("Disconnected from " + device.getName());
     }
@@ -138,16 +229,61 @@ public class BluetoothDialog implements DeviceCallback {
     @Override
     public void onMessage(String message) {
 
-        paser.Parse(message);
+        dialogInterface.onMessage(message);
+    }
+
+    @Override
+    public void onDiscoveryStarted() {
+
+        Enable(false);
+
+    }
+
+    @Override
+    public void onDiscoveryFinished() {
+
+        Enable(true);
+    }
+
+    @Override
+    public void onDeviceFound(BluetoothDevice device) {
+
+        if(!connectedDevices.contains(device)) {
+            bluetoothDevices.add(device);
+
+        }
+
+    }
+
+    @Override
+    public void onDevicePaired(BluetoothDevice device) {
+
+            if(toBeConnected == device){
+
+                bluetooth.connectToAddress(device.getAddress());
+                Enable(true);
+            }
+
+    }
+
+    @Override
+    public void onDeviceUnpaired(BluetoothDevice device) {
+
+            Enable(true);
     }
 
     @Override
     public void onError(String message) {
 
+
+            Enable(true);
+            dialogInterface.onError(message);
     }
 
     @Override
     public void onConnectError(BluetoothDevice device, String message) {
+
+            Enable(true);
 
        // setText("Something went wrong with the connection with " + device.getName());
     }

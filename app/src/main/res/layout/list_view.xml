@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:flexDirection="row"
+    app:flexWrap="wrap"
+    app:justifyContent="space_evenly"
+    app:alignContent="center"
+    >
+
+    <TextView
+        android:layout_margin="8dp"
+        android:id="@+id/bluetooth_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"/>
+    <TextView
+        android:layout_margin="8dp"
+        android:id="@+id/bluetooth_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"/>
+    <TextView
+        android:layout_margin="8dp"
+        android:id="@+id/bluetooth_bond_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"/>
+
+
+</com.google.android.flexbox.FlexboxLayout>

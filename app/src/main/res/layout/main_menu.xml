@@ -44,17 +44,16 @@
 
     <com.google.android.flexbox.FlexboxLayout
 
-
         android:layout_width="match_parent"
         android:padding="16dp"
         android:layout_height="wrap_content"
         app:flexWrap="wrap"
-        app:justifyContent="space_evenly"
-        app:alignContent="center"
+        app:justifyContent="space_between"
+        app:alignContent="stretch"
         android:scrollbars="vertical"
-        app:flexDirection="column"
+        app:flexDirection="row"
+        app:alignItems="stretch"
         app:showDivider="beginning|middle"
-
         >
         <LinearLayout
             android:layout_width="wrap_content"
@@ -71,7 +70,8 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:minHeight="200dp"
+            android:layout_height="wrap_content"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,10 +86,9 @@
         android:layout_height="wrap_content"
         app:flexDirection="row"
         app:flexWrap="wrap"
-        app:justifyContent="space_evenly"
-        app:alignContent="center"
-        app:alignItems="center"
-        app:layout_alignSelf="center"
+        app:alignContent="stretch"
+        app:justifyContent="space_between"
+        app:alignItems="stretch"
         android:layout_margin="8dp"
        >
 
@@ -176,11 +175,25 @@
 
     </com.google.android.flexbox.FlexboxLayout>
 
-     <TextView
+
+            <com.google.android.material.button.MaterialButton
+
+                android:id="@+id/blood_pressure_history_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text = "View History"
+                android:ems="10"
+                android:textSize="14sp"
+
+
+                />
+             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Profile"
                 android:textStyle="bold"/>
+
             <com.google.android.flexbox.FlexboxLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -189,20 +202,22 @@
                 android:layout_height="wrap_content"
                 app:flexDirection="row"
                 app:flexWrap="wrap"
-                app:justifyContent="space_evenly"
+                app:justifyContent="space_between"
                 app:alignContent="center"
-                app:alignItems="center"
-                app:layout_alignSelf="center"
+                app:alignItems="stretch"
+
                 android:layout_margin="8dp">
 
 
             <TextView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:ems="5"
                 android:text = "Name :"/>
             <TextView
+                android:id="@+id/blood_pressure_patient_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -217,6 +232,7 @@
                 android:textSize="14sp"
                 android:text = "Hospital Id : "/>
             <TextView
+                android:id="@+id/blood_pressure_hospital_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -226,12 +242,14 @@
 
 
                 <TextView
+                    android:id="@+id/blood_pressure_bluetooth_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="5"
                     android:textSize="14sp"
                     android:text = "Connected To : "/>
                 <TextView
+                    android:id="@+id/blood_pressure_bluetooth_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -242,11 +260,15 @@
 
         </com.google.android.flexbox.FlexboxLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+            <com.google.android.flexbox.FlexboxLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               app:flexWrap="wrap"
+               app:flexDirection="row"
+               app:justifyContent="flex_start"
+               app:alignContent="stretch"
+               app:alignItems="flex_start">
+
             <com.google.android.material.button.MaterialButton
 
                 android:id="@+id/blood_pressure_manage_button"
@@ -272,7 +294,7 @@
 
 
                 />
-            </LinearLayout>
+           </com.google.android.flexbox.FlexboxLayout>
 
         </LinearLayout>
 

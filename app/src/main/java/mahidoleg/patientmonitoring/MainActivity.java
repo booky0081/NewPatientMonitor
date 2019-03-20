@@ -1,8 +1,9 @@
 package mahidoleg.patientmonitoring;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -16,6 +17,7 @@ import com.nightonke.boommenu.BoomMenuButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import BluetoothHandler.BloodPressureHandler;
 import Database.DataBaseHandler;
 import Dialog.BluetoothDialog;
 import Dialog.ProfileManagement;
@@ -28,6 +30,7 @@ import butterknife.Unbinder;
 public class MainActivity extends AppCompatActivity implements OnBMClickListener {
 
     /* BOOKS BULLSHIT */
+
     @BindView(R.id.bmb)
     BoomMenuButton bmb;
 
@@ -37,12 +40,29 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
     @BindView(R.id.main_menu_toolbar)
     Toolbar toolbar;
 
+
+
+
     @BindView(R.id.blood_pressure_manage_button)
     MaterialButton bloodPressureManageButton;
 
     @BindView(R.id.blood_pressure_connect_button)
 
     MaterialButton bloodPressureConnectButton;
+
+    @BindView(R.id.blood_pressure_patient_name)
+    TextView bloodPressurePatientNameField;
+
+    @BindView(R.id.blood_pressure_hospital_id)
+    TextView bloodPressureHospitalIdField;
+
+    @BindView(R.id.blood_pressure_bluetooth_status)
+    TextView bloodPressureBluetoothStatus;
+
+    @BindView(R.id.blood_pressure_bluetooth_name)
+    TextView bloodPressureBlueToothName;
+
+    private BloodPressureHandler bloodPressureHandler;
 
     private Unbinder unbinder;
 
@@ -79,25 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
         this.SetUpSamepleChart();
 
-        this.profileManagement = new ProfileManagement(this);
-
-
-        bloodPressureManageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                profileManagement.Show();
-            }
-        });
-
-        this.bluetoothDialog = new BluetoothDialog(this);
-
-        this.bloodPressureConnectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                bluetoothDialog.Show();
-            }
-        });
+        this.SetUpBloodPressureSection(this);
 
     }
 
@@ -169,6 +171,22 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         LineData lineData = new LineData(dataSet);
         chart.setData(lineData);
         chart.invalidate();
+    }
+
+    private void SetUpBloodPressureSection(Activity activity){
+
+        if(bloodPressureHandler == null){
+
+            bloodPressureHandler = new BloodPressureHandler(activity);
+
+            bloodPressureHandler.setPatientNameField(bloodPressurePatientNameField);
+            bloodPressureHandler.setHospitalNameField(bloodPressureHospitalIdField);
+            bloodPressureHandler.setBluetoothStatusField(bloodPressureBluetoothStatus);
+            bloodPressureHandler.setBluetoothNameField(bloodPressurePatientNameField);
+            bloodPressureHandler.setBluetoothConnectButton(bloodPressureConnectButton);
+            bloodPressureHandler.setProfileManageButton(bloodPressureManageButton);
+        }
+
     }
 
     @Override

@@ -1,6 +1,6 @@
 package BluetoothHandler;
 
-import android.view.View;
+import android.app.Activity;
 import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
@@ -8,14 +8,18 @@ import com.google.android.material.button.MaterialButton;
 import DataModel.HospitalModel;
 import DataModel.PatientModel;
 import Database.DataBaseHandler;
+import Dialog.BluetoothDialog;
+import Dialog.DialogInterface;
 import Dialog.ProfileManagement;
 import Dialog.ProfileManagementInterface;
 
-public class BaseHandler {
+public abstract class BaseHandler implements DialogInterface ,ProfileManagementInterface{
 
     private TextView patientNameField;
 
     private TextView bluetoothNameField;
+
+    private TextView bluetoothStatusField;
 
     private TextView hospitalNameField;
 
@@ -27,47 +31,18 @@ public class BaseHandler {
 
     private ProfileManagementInterface profileManagementInterface;
 
+    private BluetoothDialog bluetoothDialog;
+
     private long selectedPatientId = -1;
 
-    public BaseHandler(){
+    public BaseHandler(Activity actvity){
 
-        profileManagementInterface = new ProfileManagementInterface() {
-            @Override
-            public void onComplete(long id) {
+        bluetoothDialog = new BluetoothDialog(actvity,this);
 
+        profileManagement = new ProfileManagement(actvity);
 
+        profileManagementInterface = this;
 
-                if(id < 1){
-
-                    patientNameField.setText("");
-
-                    hospitalNameField.setText("");
-
-                    bluetoothConnectButton.setEnabled(false);
-
-                }else{
-
-
-
-                    selectedPatientId = id;
-
-                    PatientModel patientModel =DataBaseHandler.getInstance().getDB().getPatientDao().getPatients(id);
-
-                    patientNameField.setText(patientModel.getFirstName());
-
-                    long hospitalId = patientModel.getHospitalId();
-
-                    HospitalModel hospitalModel = DataBaseHandler.getInstance().getDB().getHospitalDao().getHospital(hospitalId);
-
-                    hospitalNameField.setText(hospitalModel.getHosipitalName());
-
-                    if(profileManageButton!=null){
-
-                        bluetoothConnectButton.setEnabled(true);
-                    }
-                }
-            }
-        };
     }
 
     public void setPatientNameField(TextView patientNameField) {
@@ -84,19 +59,18 @@ public class BaseHandler {
 
     public void setProfileManageButton(final MaterialButton profileManageButton) {
         this.profileManageButton = profileManageButton;
-        profileManageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if(profileManagement!=null){
+        profileManageButton.setOnClickListener(v -> {
 
-                    if(selectedPatientId==-1){
+            if(profileManagement!=null){
 
-                        profileManagement.Show(profileManagementInterface);
-                    }else{
+                if(selectedPatientId==-1){
 
-                        profileManagement.Show(selectedPatientId,profileManagementInterface);
-                    }
+                    profileManagement.Show(profileManagementInterface);
+
+                }else{
+
+                    profileManagement.Show(selectedPatientId,profileManagementInterface);
                 }
             }
         });
@@ -107,13 +81,80 @@ public class BaseHandler {
         this.bluetoothConnectButton = bluetoothConnectButton;
 
         this.bluetoothConnectButton.setEnabled(false);
-    }
 
-    public void setProfileManagement(ProfileManagement profileManagement) {
-
-        this.profileManagement = profileManagement;
-
+        this.bluetoothConnectButton.setOnClickListener(v -> bluetoothDialog.Show());
     }
 
 
+
+
+    protected  abstract  void Parse(String message);
+    @Override
+    public void onMessage(String message) {
+
+    }
+
+    @Override
+    public void onError(String message) {
+
+    }
+
+    @Override
+    public void onDisconnected() {
+
+        bluetoothStatusField.setText("Disconnected");
+
+    }
+
+    @Override
+    public void onConnected(String deviceName) {
+
+        bluetoothStatusField.setText("Connected");
+
+        bluetoothNameField.setText(deviceName);
+    }
+
+    @Override
+    public void onComplete(long id) {
+
+        selectedPatientId = id;
+
+        if(id < 0){
+
+            patientNameField.setText("");
+
+            hospitalNameField.setText("");
+
+            bluetoothConnectButton.setEnabled(false);
+
+        }else{
+
+
+            PatientModel patientModel = DataBaseHandler.getInstance().getDB().getPatientDao().getPatients(id);
+
+            if(patientModel == null){
+                return;
+            }
+            patientNameField.setText(patientModel.getFirstName());
+
+            long hospitalId = patientModel.getHospitalId();
+
+            HospitalModel hospitalModel = DataBaseHandler.getInstance().getDB().getHospitalDao().getHospital(hospitalId);
+
+            if(hospitalModel!=null){
+
+                hospitalNameField.setText(hospitalModel.getHosipitalName());
+            }
+
+
+            if(profileManageButton!=null){
+
+                bluetoothConnectButton.setEnabled(true);
+            }
+        }
+    }
+
+    public void setBluetoothStatusField(TextView bluetoothStatusField) {
+        this.bluetoothStatusField = bluetoothStatusField;
+    }
 }
