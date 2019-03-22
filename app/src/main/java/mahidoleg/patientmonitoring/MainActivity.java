@@ -1,14 +1,6 @@
 package mahidoleg.patientmonitoring;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -27,16 +19,13 @@ import java.util.List;
 
 import BluetoothHandler.BloodPressureHandler;
 import Database.DataBaseHandler;
-//import Dialog.BluetoothDialog;
-import Dialog.ProfileManagement;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import me.aflak.bluetooth.Bluetooth;
-import me.aflak.bluetooth.DeviceCallback;
+
+//import Dialog.BluetoothDialog;
 
 public class MainActivity extends AppCompatActivity implements OnBMClickListener {
 
@@ -44,9 +33,6 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
     @BindView(R.id.bmb)
     BoomMenuButton bmb;
-
-    @BindView(R.id.chart)
-    LineChart chart;
 
     @BindView(R.id.main_menu_toolbar)
     Toolbar toolbar;
@@ -73,6 +59,24 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
     @BindView(R.id.blood_pressure_bluetooth_name)
     TextView bloodPressureBlueToothName;
 
+    @BindView(R.id.cuff_pressure)
+    TextView cuffPressureField;
+
+    @BindView(R.id.diastolic)
+    TextView diastolicField;
+
+    @BindView(R.id.systolic)
+
+    TextView systolicField;
+
+    @BindView(R.id.pulse)
+
+    TextView pulseField;
+
+    @BindView(R.id.chart)
+    LineChart chart;
+
+
     private BloodPressureHandler bloodPressureHandler;
 
     private Unbinder unbinder;
@@ -83,9 +87,6 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
     private static boolean loggedIn = false;
 
-    private ProfileManagement profileManagement;
-
-    private BluetoothDialog bluetoothDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main_menu);
-tansOnCreate();
+  //tansOnCreate();
         unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -108,9 +109,9 @@ tansOnCreate();
             bmb.addBuilder(builder);
         }
 
-        this.SetUpSamepleChart();
+       // this.SetUpSamepleChart();
 
-        this.SetUpBloodPressureSection(this);
+
 
     }
 
@@ -123,6 +124,8 @@ tansOnCreate();
     protected void onResume() {
 
         super.onResume();
+
+        this.SetUpBloodPressureSection(this);
 
         if (loggedIn) {
             HamButton.Builder builder = (HamButton.Builder) bmb.getBuilder(0);
@@ -191,11 +194,26 @@ tansOnCreate();
             bloodPressureHandler = new BloodPressureHandler(activity);
 
             bloodPressureHandler.setPatientNameField(bloodPressurePatientNameField);
+
             bloodPressureHandler.setHospitalNameField(bloodPressureHospitalIdField);
+
             bloodPressureHandler.setBluetoothStatusField(bloodPressureBluetoothStatus);
+
             bloodPressureHandler.setBluetoothNameField(bloodPressurePatientNameField);
+
             bloodPressureHandler.setBluetoothConnectButton(bloodPressureConnectButton);
+
             bloodPressureHandler.setProfileManageButton(bloodPressureManageButton);
+
+            bloodPressureHandler.setCuffPressureField(cuffPressureField);
+
+            bloodPressureHandler.setDiastolicField(diastolicField);
+
+            bloodPressureHandler.setPulseField(pulseField);
+
+            bloodPressureHandler.setSystolicField(systolicField);
+
+            bloodPressureHandler.setChart(chart);
         }
 
     }
@@ -210,8 +228,10 @@ tansOnCreate();
                 loggedIn = true;
             }
         }
-    }
+    };
+    /*
     /* TAN'S BULLSHIT */
+    /*
     private Bluetooth pairedBluetooth;
     private ListView deviceList;
     private TextView stateText;
@@ -389,6 +409,8 @@ tansOnCreate();
         }
     }
 
+    */
+    /*
     public class BluetoothDialog {
 
         @BindView(R.id.state_text)
@@ -460,5 +482,6 @@ tansOnCreate();
             dialog.show();
         }
     }
+    */
 
 }

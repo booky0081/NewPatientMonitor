@@ -35,6 +35,7 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
 
     private long selectedPatientId = -1;
 
+    private boolean isRunning = false;
     public BaseHandler(Activity actvity){
 
         bluetoothDialog = new BluetoothDialog(actvity,this);
@@ -82,11 +83,25 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
 
         this.bluetoothConnectButton.setEnabled(false);
 
-        this.bluetoothConnectButton.setOnClickListener(v -> bluetoothDialog.Show());
+        this.bluetoothConnectButton.setOnClickListener(
+                v -> {
+
+                    if (!isRunning) {
+
+                        bluetoothDialog.Show();
+
+                    } else {
+
+                        bluetoothDialog.Stop();
+
+                        isRunning = !isRunning;
+
+                        profileManageButton.setEnabled(true);
+                    }
+
+
+                });
     }
-
-
-
 
     protected  abstract  void Parse(String message);
     @Override
@@ -106,12 +121,19 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
 
     }
 
+    protected abstract void Start();
     @Override
     public void onConnected(String deviceName) {
 
         bluetoothStatusField.setText("Connected");
 
+        isRunning = true;
+
+        profileManageButton.setEnabled(false);
+
         bluetoothNameField.setText(deviceName);
+
+        Start();
     }
 
     @Override

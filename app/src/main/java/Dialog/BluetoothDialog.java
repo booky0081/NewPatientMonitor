@@ -53,6 +53,7 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
 
     private Dialog.DialogInterface dialogInterface;
+
     public  BluetoothDialog(Activity activity, Dialog.DialogInterface dialogInterface){
 
         this.activity = activity;
@@ -62,6 +63,7 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
         dialog = new AlertDialog.Builder(activity).setView(view).create();
 
         this.dialogInterface = dialogInterface;
+
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
