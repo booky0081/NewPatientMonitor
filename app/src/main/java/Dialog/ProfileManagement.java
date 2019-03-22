@@ -1,11 +1,11 @@
 package Dialog;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 
@@ -59,6 +59,7 @@ public class ProfileManagement {
     private long selectedPatientId = -1;
 
     private  ProfileManagementInterface profileManagementInterface;
+
     public ProfileManagement(Activity activity){
 
         View view = activity.getLayoutInflater().inflate(R.layout.manage_profile, null);
@@ -70,6 +71,8 @@ public class ProfileManagement {
         dialog = new AlertDialog.Builder(activity).setView(view).create();
 
         hospitalList= new ArrayList<>();
+
+        patienList = new ArrayList<>();
 
         hospitalSpinner = view.findViewById(R.id.manage_profile_hospital_name_spinner);
 
@@ -87,13 +90,9 @@ public class ProfileManagement {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if(position == 0){ selectedHospitalId = -1 ; }
-                else{ position = position -1; selectedHospitalId = hospitalList.get(position).getId();}
+                selectedHospitalId = hospitalList.get(position).getId();
 
-                TextView textView =  (TextView) hospitalSpinner.getSelectedView();
-
-                String name = textView.getText().toString().trim();
-                hospitalNameField.setText(name);
+                hospitalNameField.setText(hospitalList.get(position).getHosipitalName());
 
             }
 
@@ -105,22 +104,35 @@ public class ProfileManagement {
 
         this.ReloadHospitalList();
 
-        this.ReloadPatientList();
         patienSpinner.setAdapter(new PatientAdapter(view.getContext(),android.R.layout.simple_spinner_dropdown_item,patienList));
 
         patienSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if(position == 0){ selectedPatientId = -1 ; }
-                else{ position = position  -1 ; selectedPatientId = patienList.get(position).getId();}
 
-                TextView textView =  (TextView) patienSpinner.getSelectedView();
 
-                String name = textView.getText().toString().trim();
-                patienNameField.setText(name);
+                    selectedPatientId = patienList.get(position).getId();
 
-            }
+                    patienNameField.setText(patienList.get(position).getFirstName());
+
+                    long hospitalId = patienList.get(position).getHospitalId();
+
+                    for (int i = 0; i < hospitalList.size(); i++) {
+
+                        if (hospitalList.get(i).getId() == hospitalId) {
+
+                            selectedHospitalId = hospitalId;
+
+                            hospitalSpinner.setSelection(i);
+
+                            break;
+                        }
+
+                    }
+
+                }
+
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -128,82 +140,76 @@ public class ProfileManagement {
             }
         });
 
+        this.ReloadPatientList();
 
+        hospitalNameSaveButton.setOnClickListener(v -> {
 
-        hospitalNameSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            Log.d("selected patientid ",selectedPatientId+"" +selectedHospitalId);
 
+               String hospitalName = hospitalNameField.getText().toString().trim();
 
-                   String newHospitalName = hospitalNameField.getText().toString().trim();
+               if(selectedHospitalId <1 && !hospitalName.isEmpty() ){
 
-                   if(selectedHospitalId==-1){
+                   CreateHospital(hospitalName);
 
-                       if(!newHospitalName.isEmpty()) {
+               }else{
 
-                           HospitalModel newHospitalModel = new HospitalModel();
-                           newHospitalModel.setHosipitalName(newHospitalName);
-                           selectedHospitalId = DataBaseHandler.getInstance().getDB().getHospitalDao().insertHospital(newHospitalModel);
+                   int selectedHospitalIndex = hospitalSpinner.getSelectedItemPosition();
 
-                           ReloadHospitalList();
+                   HospitalModel hospitalModel = hospitalList.get(selectedHospitalIndex);
 
+                   if(hospitalModel.getId()!= selectedHospitalId){
 
-                           for(int i = 0;i<hospitalList.size();i++){
-
-                               if(hospitalList.get(i).getId() == selectedHospitalId){
-
-                                   hospitalSpinner.setSelection(i);
-
-                                   break;
-                               }
-                           }
-
-                       }
-
-                   }else{
-
-                       for(int i =0 ;i<hospitalList.size();i++){
-
-                           if(hospitalList.get(i).getId() == selectedHospitalId
-                                    && !newHospitalName.equals(hospitalList.get(i).getId())
-                                    && !newHospitalName.isEmpty()){
-
-                               DataBaseHandler.getInstance().getDB().getHospitalDao().update(newHospitalName,selectedHospitalId);
-                               ReloadHospitalList();
-
-                           }
-                       }
-
-
+                       return;
                    }
 
-                   if(selectedPatientId == -1){
+                   if(!hospitalName.isEmpty() && !hospitalModel.getHosipitalName().equals(hospitalName)){
 
-                       String newPatientName = patienNameField.getText().toString().trim();
-
-                       if(!newPatientName.isEmpty()){
-
-                           PatientModel newPatientModel = new PatientModel();
-
-                           newPatientModel.setFirstName(newPatientName);
-
-                           newPatientModel.setHospitalId(selectedHospitalId);
-
-                           selectedPatientId = DataBaseHandler.getInstance().getDB().getPatientDao()
-                                    .insertUser(newPatientModel);
-                       }
-
+                       UpdateHospital(hospitalName);
                    }
+               }
 
-                   if(profileManagementInterface!=null) {
 
-                       profileManagementInterface.onComplete(selectedHospitalId);
-                   }
+               if(selectedHospitalId< 1){
 
                    dialog.dismiss();
+               }
+
+            String pateintName = patienNameField.getText().toString().trim();
+
+            if(selectedPatientId < 1 && !pateintName.isEmpty()){
+
+                   if(selectedHospitalId>0){
+
+                       CreatePatient(pateintName);
+                   }
+               }else{
 
 
-            }
+                    int selectePatientIndex = patienSpinner.getSelectedItemPosition();
+
+                    PatientModel patientModel = patienList.get(selectePatientIndex);
+
+                    if(patientModel.getId()!= selectedPatientId){
+                        return;
+                    }
+
+                    if((!pateintName.isEmpty() && !patientModel.getFirstName().equals(pateintName)
+
+                            ||(selectedHospitalId>0 && selectedHospitalId!= patientModel.getHospitalId()))){
+
+                        UpdatePateint(pateintName);
+
+                    }
+               }
+
+
+               if(selectedPatientId > 0){
+                   Log.d("selected patientid ",selectedPatientId+"");
+                   profileManagementInterface.onComplete(selectedHospitalId);
+               }
+
+               dialog.dismiss();
         });
 
 
@@ -211,25 +217,75 @@ public class ProfileManagement {
 
     public void ReloadHospitalList(){
 
-        this.hospitalList = DataBaseHandler.getInstance().getDB().getHospitalDao().getHospitals();
-
+        this.hospitalList.clear();
         HospitalModel tempHospitalModel = new HospitalModel();
+
+        tempHospitalModel.setHosipitalName("");
+
+        tempHospitalModel.setId(0);
 
         hospitalList.add(0,tempHospitalModel);
 
+        this.hospitalList.addAll(DataBaseHandler.getInstance().getDB().getHospitalDao().getHospitals());
+
+        /*
+        for(int i=0;i<hospitalList.size();i++){
+
+            Log.d("hospital name", hospitalList.get(i).getHosipitalName() + hospitalList.get(i).getId());
+        }
+
+*/
         HospitalModelAdapter hospitalAdapter = (HospitalModelAdapter)hospitalSpinner.getAdapter();
 
         hospitalAdapter.SetData(hospitalList);
+
+        if(selectedHospitalId > 0){
+
+            for(int i=0;i<hospitalList.size();i++){
+
+                if(hospitalList.get(i).getId() == selectedHospitalId){
+                     hospitalSpinner.setSelection(i);
+
+                     break;
+                }
+            }
+        }
 
     }
 
     public void ReloadPatientList(){
 
-        this.patienList = DataBaseHandler.getInstance().getDB().getPatientDao().getPatients();
+        this.patienList.clear();
 
         PatientModel patientModel = new PatientModel();
 
+        patientModel.setFirstName("");
+        patientModel.setId(0);
+        patientModel.setHospitalId(0);
         patienList.add(0,patientModel);
+
+        this.patienList.addAll(DataBaseHandler.getInstance().getDB().getPatientDao().getPatients());
+
+       /* for(int i=0;i<patienList.size();i++){
+
+            Log.d("patient name", patienList.get(i).getFirstName() + patienList.get(i).getId());
+        }
+*/
+        PatientAdapter patientAdapter = (PatientAdapter) patienSpinner.getAdapter();
+
+        patientAdapter.SetData(patienList);
+        if(selectedPatientId > 0){
+
+            for(int i=0;i<patienList.size();i++){
+
+                if(patienList.get(i).getId() == selectedPatientId){
+                    patienSpinner.setSelection(i);
+
+                    break;
+                }
+            }
+        }
+
 
 
     }
@@ -294,7 +350,7 @@ public class ProfileManagement {
 
             if(patienList.get(i).getId()== patientId){
 
-                patienSpinner.setSelection(i+1);
+                patienSpinner.setSelection(i);
 
                 this.selectedPatientId = patienList.get(i).getId();
 
@@ -304,7 +360,7 @@ public class ProfileManagement {
 
                     if(hospitalList.get(j).getId() == hospitalId){
 
-                        hospitalSpinner.setSelection(j+1);
+                        hospitalSpinner.setSelection(j);
                     }
                 }
 
@@ -327,5 +383,56 @@ public class ProfileManagement {
         hospitalSpinner.setSelection(-1);
 
         this.dialog.show();
+    }
+
+    private void CreatePatient(String name){
+
+        if(name.isEmpty()|| selectedHospitalId <1){
+            return;
+        }
+
+        PatientModel patientModel = new PatientModel();
+
+        patientModel.setHospitalId(selectedHospitalId);
+
+        patientModel.setFirstName(name);
+
+        selectedPatientId = DataBaseHandler.getInstance().getDB()
+                    .getPatientDao().insertUser(patientModel);
+
+        ReloadPatientList();
+    }
+
+    private void UpdatePateint(String name){
+
+        if(name.isEmpty()){
+            return;
+        }
+
+        DataBaseHandler.getInstance().getDB().getPatientDao().Update(name,selectedHospitalId,selectedPatientId);
+
+        ReloadPatientList();
+    }
+
+    private void CreateHospital(String name){
+
+        if(name.isEmpty()){
+            return;
+        }
+
+        HospitalModel hospitalModel  = new HospitalModel();
+
+        hospitalModel.setHosipitalName(name);
+
+        selectedHospitalId = DataBaseHandler.getInstance().getDB()
+                    .getHospitalDao().insertHospital(hospitalModel);
+        ReloadHospitalList();
+    }
+
+    private void UpdateHospital(String name){
+
+        DataBaseHandler.getInstance().getDB()
+                .getHospitalDao().update(name,selectedHospitalId);
+        ReloadHospitalList();
     }
 }
