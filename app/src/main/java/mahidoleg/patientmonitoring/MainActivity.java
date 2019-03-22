@@ -24,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import me.aflak.bluetooth.Bluetooth;
 
 //import Dialog.BluetoothDialog;
 
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
     private BloodPressureHandler bloodPressureHandler;
 
+    private Bluetooth pairedBluetooth ;
     private Unbinder unbinder;
 
     private String[] menuButton = {"LOGIN", "DISCLAIMER", "MORE"};
@@ -109,11 +111,19 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
             bmb.addBuilder(builder);
         }
 
+        pairedBluetooth = new Bluetooth(this);
+        this.SetUpBloodPressureSection(this);
+        this.bloodPressureHandler.init(pairedBluetooth);
+
+
+
        // this.SetUpSamepleChart();
 
 
 
     }
+
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -125,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
         super.onResume();
 
-        this.SetUpBloodPressureSection(this);
+
 
         if (loggedIn) {
             HamButton.Builder builder = (HamButton.Builder) bmb.getBuilder(0);
@@ -228,7 +238,26 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
                 loggedIn = true;
             }
         }
-    };
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+        pairedBluetooth.onStart();
+        pairedBluetooth.enable();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        pairedBluetooth.onStop();
+
+
+    }
+
+    ;
     /*
     /* TAN'S BULLSHIT */
     /*

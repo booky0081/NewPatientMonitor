@@ -3,7 +3,6 @@ package Dialog;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -122,18 +121,10 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
 
 
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        refreshButton.setOnClickListener(v -> Refresh());
 
-                Refresh();
+      //  bluetooth = new Bluetooth(activity.getApplicationContext());
 
-            }
-        });
-
-        bluetooth = new Bluetooth(activity);
-
-        Log.d("base Handler",bluetooth.toString());
         dialog.setTitle("Connect to Devices");
 
         dialog.setCanceledOnTouchOutside(false);
@@ -157,8 +148,12 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
     private void Refresh(){
 
-        bluetooth.startScanning();
+       // bluetooth
 
+        if(bluetooth!=null){
+
+            bluetooth.getPairedDevices();
+        }
         bluetoothDevices.clear();
 
 
@@ -178,11 +173,15 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
 
     }
+
     public void Show(){
 
         dialog.show();
-        Refresh();
+
+//        Refresh();
     }
+
+
 
     public void dismiss(){
 
@@ -198,6 +197,9 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
     public void Start(){
 
         bluetooth.onStart();
+
+        bluetooth.enable();
+
     }
 
     public void Stop(){
@@ -288,5 +290,9 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
             Enable(true);
 
        // setText("Something went wrong with the connection with " + device.getName());
+    }
+
+    public void setBluetooth(Bluetooth blu){
+        this.bluetooth = blu;
     }
 }

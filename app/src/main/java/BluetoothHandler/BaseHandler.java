@@ -6,12 +6,14 @@ import android.widget.TextView;
 import com.google.android.material.button.MaterialButton;
 
 import DataModel.HospitalModel;
+
 import DataModel.PatientModel;
 import Database.DataBaseHandler;
 import Dialog.BluetoothDialog;
 import Dialog.DialogInterface;
 import Dialog.ProfileManagement;
 import Dialog.ProfileManagementInterface;
+import me.aflak.bluetooth.Bluetooth;
 
 public abstract class BaseHandler implements DialogInterface ,ProfileManagementInterface{
 
@@ -97,6 +99,8 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
                         isRunning = !isRunning;
 
                         profileManageButton.setEnabled(true);
+
+                        this.Stop();
                     }
 
 
@@ -122,6 +126,8 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
     }
 
     protected abstract void Start();
+
+    protected abstract void Stop();
     @Override
     public void onConnected(String deviceName) {
 
@@ -178,5 +184,15 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
 
     public void setBluetoothStatusField(TextView bluetoothStatusField) {
         this.bluetoothStatusField = bluetoothStatusField;
+    }
+
+    public void init(Bluetooth blu) {
+
+        bluetoothDialog.setBluetooth(blu);
+    }
+
+    public void deinit(){
+
+        bluetoothDialog.Stop();
     }
 }

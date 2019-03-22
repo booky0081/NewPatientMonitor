@@ -156,6 +156,11 @@ public class BloodPressureHandler extends BaseHandler {
         this.currentElasped = 0;
     }
 
+    @Override
+    protected void Stop() {
+
+    }
+
     public void setSystolicField(TextView systolicField) {
 
         this.systolicField = systolicField;
@@ -178,7 +183,7 @@ public class BloodPressureHandler extends BaseHandler {
     private void setBP(){
 
 
-        this.currentElasped = System.currentTimeMillis() - this.currentTime;  
+        this.currentElasped = System.currentTimeMillis() - this.currentTime;
 
         Entry diastolicData = new Entry(this.diastolicPressure,currentElasped);
 

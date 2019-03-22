@@ -25,6 +25,7 @@ public class DataBaseHandler {
     public synchronized  Database getDB(){
         return db;
     }
+
     private DataBaseHandler(Context context) {
 
          db =  Room.databaseBuilder(context, Database.class, "PatientOMeterDB").allowMainThreadQueries().build();
