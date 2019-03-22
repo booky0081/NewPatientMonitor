@@ -1,8 +1,15 @@
 package mahidoleg.patientmonitoring;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -17,13 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Database.DataBaseHandler;
-import Dialog.BluetoothDialog;
+//import Dialog.BluetoothDialog;
 import Dialog.ProfileManagement;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import me.aflak.bluetooth.Bluetooth;
+import me.aflak.bluetooth.DeviceCallback;
 
 public class MainActivity extends AppCompatActivity implements OnBMClickListener {
 
@@ -62,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main_menu);
-
+tansOnCreate();
         unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -182,54 +192,31 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
             }
         }
     }
-    /* TAN'S BULLSHIT *//*
+    /* TAN'S BULLSHIT */
     private Bluetooth pairedBluetooth;
     private ListView deviceList;
     private TextView stateText;
+    private TextView cuffPressureText;
+    private TextView diastolic;
+    private TextView systolic;
+    private TextView pulse;
     private Button refreshButton;
     private ArrayAdapter<String> adapter;
     private List<BluetoothDevice> connectedDevices;
     private List<Bluetooth> connectedBluetooths;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+    protected void tansOnCreate() {
 
         pairedBluetooth = new Bluetooth(this);
         connectedDevices = new ArrayList<BluetoothDevice>();
         connectedBluetooths = new ArrayList<Bluetooth>();
 
-        deviceList = (ListView) findViewById(R.id.device_list);
-        stateText = (TextView) findViewById(R.id.state_text);
-        refreshButton = (Button) findViewById(R.id.refresh_button);
-
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
-        deviceList.setAdapter(adapter);
-        deviceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BluetoothDevice device = pairedBluetooth.getPairedDevices().get(position);
-                setText("Connecting to " + device.getName());
-                Bluetooth bluetooth = new Bluetooth(MainActivity.this);
-                bluetooth.onStart();
-                bluetooth.enable();
-                if (device.getName().equals("CA-NIBP-ab53")) {
-                    bluetooth.setDeviceCallback(new BloodPressureCallback());
-                }
-                bluetooth.connectToDevice(device);
-                connectedBluetooths.add(bluetooth);
-            }
-        });
-
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addDevicesToList();
-                setText("Click on a device to connect to it");
-            }
-        });
-
+        stateText = findViewById(R.id.state_text);
+        cuffPressureText = findViewById(R.id.cuff_pressure);
+        diastolic = findViewById(R.id.diastolic);
+        systolic = findViewById(R.id.systolic);
+        pulse = findViewById(R.id.pulse);
     }
 
     private void setText(final String txt) {
@@ -356,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
                     state = UNKNOWN;
                 }
             }
-            //setText(String.valueOf(systolicPressure));
+            setBP(systolicPressure,diastolicPressure,pulseRate,cuffPressure);
 
         }
 
@@ -368,7 +355,91 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         public void onConnectError(BluetoothDevice device, String message) {
             setText("Something went wrong with the connection with " + device.getName());
         }
+
+        private void setBP( final long systolicPressure, final long diastolicPressure,final long pulseRate,final long cuffPressure ){
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    systolic.setText(String.valueOf(systolicPressure));
+                    diastolic.setText(String.valueOf(diastolicPressure));
+                    pulse.setText(String.valueOf(pulseRate));
+                    cuffPressureText.setText(String.valueOf(cuffPressure));
+                }
+            });
+        }
     }
-*/
+
+    public class BluetoothDialog {
+
+        @BindView(R.id.state_text)
+        TextView stateText;
+
+        @BindView(R.id.device_list)
+        ListView  deviceList;
+
+        @BindView(R.id.refresh_button)
+        Button refreshButton;
+
+        private Activity activity;
+
+        private Unbinder unbinder;
+
+        private AlertDialog dialog;
+
+        public BluetoothDialog(Activity activity){
+
+            this.activity = activity;
+
+            View view = activity.getLayoutInflater().inflate(R.layout.bluetooth_layout, null);
+
+            dialog = new AlertDialog.Builder(activity).setView(view).create();
+
+            unbinder = ButterKnife.bind(view);
+
+            stateText = view.findViewById(R.id.state_text);
+
+            deviceList = view.findViewById(R.id.device_list);
+
+            refreshButton = view.findViewById(R.id.refresh_button);
+
+            //
+            //deviceList = (ListView) findViewById(R.id.device_list);
+            //stateText = (TextView) findViewById(R.id.state_text);
+            //refreshButton = (Button) findViewById(R.id.refresh_button);
+
+            adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, new ArrayList<String>());
+            deviceList.setAdapter(adapter);
+            deviceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    BluetoothDevice device = pairedBluetooth.getPairedDevices().get(position);
+                    setText("Connecting to " + device.getName());
+                    Bluetooth bluetooth = new Bluetooth(MainActivity.this);
+                    bluetooth.onStart();
+                    bluetooth.enable();
+                    if (device.getName().equals("CA-NIBP-ab53")) {
+                        bluetooth.setDeviceCallback(new BloodPressureCallback());
+                    }
+                    bluetooth.connectToDevice(device);
+                    connectedBluetooths.add(bluetooth);
+                }
+            });
+
+            refreshButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addDevicesToList();
+                    setText("Click on a device to connect to it");
+                }
+            });
+
+        }
+
+        public void Show(){
+
+            dialog.show();
+        }
+    }
 
 }

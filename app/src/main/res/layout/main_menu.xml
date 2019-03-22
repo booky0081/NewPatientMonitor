@@ -94,81 +94,93 @@
        >
 
         <TextView
-            android:id="@+id/textview1_1"
+            android:id="@+id/cuff_pressure_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:ems="5"
-            android:text="value_1 : "
+            android:text="cuff pressure: "
+            android:textSize="12sp"
 
             />
 
         <TextView
-            android:id="@+id/textview1"
+            android:id="@+id/cuff_pressure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:ems="5"
-
-            android:text="10000"
-
-            />
-
-        <TextView
-            android:id="@+id/textview2_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:ems="5"
-            android:text="value_2 : "
-
-            />
-        <TextView
-            android:id="@+id/textview2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:ems="5"
             android:text="10000"
 
+            android:textSize="12sp"
 
             />
 
         <TextView
-            android:id="@+id/textview3_1"
+            android:id="@+id/systolic_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:ems="5"
-            android:text="value_4 : "
-
-            />
-        <TextView
-            android:id="@+id/textview3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:text="systolic : "
             android:textSize="12sp"
-            android:ems="5"
-            android:text="10000"
-            />
-
-        <TextView
-            android:id="@+id/textview4_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:ems="5"
-            android:text="value_4 : "
 
             />
 
         <TextView
-            android:id="@+id/textview4"
+            android:id="@+id/systolic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:ems="5"
             android:text="10000"
+            android:textSize="12sp"
+
+
+            />
+
+        <TextView
+            android:id="@+id/diastolic_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="diastolic: "
+            android:textSize="12sp"
+
+            />
+
+        <TextView
+            android:id="@+id/diastolic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="10000"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/pulse_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="pulse : "
+            android:textSize="12sp"
+
+            />
+
+        <TextView
+            android:id="@+id/pulse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="10000"
+            android:textSize="12sp"
+
+
+            />
+
+        <TextView
+            android:id="@+id/state_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="10000"
+            android:textSize="12sp"
 
 
             />
