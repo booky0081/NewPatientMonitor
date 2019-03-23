@@ -66,9 +66,8 @@ public class DeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
 
         addressField.setText(bluetoothDevices.get(position).getAddress());
 
-        TextView bondStateField = convertView.findViewById(R.id.bluetooth_bond_state);
 
-        bondStateField.setText(bluetoothDevices.get(position).getBondState());
+//        bondStateField.setText(bluetoothDevices.get(position).getBondState());
         // And finally return your dynamic (or custom) view for each spinner item
 
         return convertView;

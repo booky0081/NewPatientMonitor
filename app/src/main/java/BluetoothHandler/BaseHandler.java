@@ -1,33 +1,42 @@
 package BluetoothHandler;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 
 import DataModel.HospitalModel;
-
 import DataModel.PatientModel;
 import Database.DataBaseHandler;
 import Dialog.BluetoothDialog;
 import Dialog.DialogInterface;
 import Dialog.ProfileManagement;
 import Dialog.ProfileManagementInterface;
-import me.aflak.bluetooth.Bluetooth;
+import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import mahidoleg.patientmonitoring.R;
 
-public abstract class BaseHandler implements DialogInterface ,ProfileManagementInterface{
+public abstract class BaseHandler extends Fragment implements DialogInterface ,ProfileManagementInterface{
 
-    private TextView patientNameField;
+    @BindView(R.id.blood_pressure_patient_name)
+    TextView patientNameField;
 
-    private TextView bluetoothNameField;
+    @BindView(R.id.blood_pressure_bluetooth_name)
+     TextView bluetoothNameField;
 
-    private TextView bluetoothStatusField;
+    @BindView(R.id.blood_pressure_bluetooth_status)
+     TextView bluetoothStatusField;
 
-    private TextView hospitalNameField;
+    @BindView(R.id.blood_pressure_hospital_id)
+     TextView hospitalNameField;
 
-    private MaterialButton profileManageButton;
+    @BindView(R.id.blood_pressure_manage_button)
+    MaterialButton profileManageButton;
 
-    private MaterialButton bluetoothConnectButton;
+    @BindView(R.id.blood_pressure_connect_button)
+    MaterialButton bluetoothConnectButton;
+
 
     private ProfileManagement profileManagement;
 
@@ -38,30 +47,44 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
     private long selectedPatientId = -1;
 
     private boolean isRunning = false;
-    public BaseHandler(Activity actvity){
 
-        bluetoothDialog = new BluetoothDialog(actvity,this);
 
-        profileManagement = new ProfileManagement(actvity);
+    protected void SetUp(Activity activity){
 
-        profileManagementInterface = this;
+
+        if(profileManagement == null){
+
+            profileManagement = new ProfileManagement(activity);
+
+            profileManagementInterface = this;
+
+            setProfileManageButton();
+
+            setBluetoothConnectButton();
+        }
+
 
     }
 
-    public void setPatientNameField(TextView patientNameField) {
-        this.patientNameField = patientNameField;
+    @Override
+    public void onStart() {
+
+        super.onStart();
+
+
     }
 
-    public void setBluetoothNameField(TextView bluetoothNameField) {
-        this.bluetoothNameField = bluetoothNameField;
+    @Override
+    public void onStop() {
+
+        super.onStop();
+
+
     }
 
-    public void setHospitalNameField(TextView hospitalNameField) {
-        this.hospitalNameField = hospitalNameField;
-    }
 
-    public void setProfileManageButton(final MaterialButton profileManageButton) {
-        this.profileManageButton = profileManageButton;
+    protected void setProfileManageButton() {
+
 
         profileManageButton.setOnClickListener(v -> {
 
@@ -74,14 +97,13 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
                 }else{
 
                     profileManagement.Show(selectedPatientId,profileManagementInterface);
+
                 }
             }
         });
     }
 
-    public void setBluetoothConnectButton(MaterialButton bluetoothConnectButton) {
-
-        this.bluetoothConnectButton = bluetoothConnectButton;
+    protected void setBluetoothConnectButton() {
 
         this.bluetoothConnectButton.setEnabled(false);
 
@@ -90,11 +112,15 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
 
                     if (!isRunning) {
 
-                        bluetoothDialog.Show();
+                        if(bluetoothDialog!=null) {
+                            bluetoothDialog.Show();
+                        }
 
                     } else {
 
-                        bluetoothDialog.Stop();
+                        if(bluetoothDialog != null ) {
+                            bluetoothDialog.Stop();
+                        }
 
                         isRunning = !isRunning;
 
@@ -108,9 +134,11 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
     }
 
     protected  abstract  void Parse(String message);
+
     @Override
     public void onMessage(String message) {
 
+        Parse(message);
     }
 
     @Override
@@ -163,6 +191,9 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
             if(patientModel == null){
                 return;
             }
+
+            Log.d("Patient Name",patientModel.getFirstName());
+
             patientNameField.setText(patientModel.getFirstName());
 
             long hospitalId = patientModel.getHospitalId();
@@ -182,17 +213,11 @@ public abstract class BaseHandler implements DialogInterface ,ProfileManagementI
         }
     }
 
-    public void setBluetoothStatusField(TextView bluetoothStatusField) {
-        this.bluetoothStatusField = bluetoothStatusField;
-    }
 
-    public void init(Bluetooth blu) {
+    public void setBluetoothDialog(BluetoothDialog bluetoothDialog){
 
-        bluetoothDialog.setBluetooth(blu);
-    }
+        this.bluetoothDialog = bluetoothDialog;
 
-    public void deinit(){
-
-        bluetoothDialog.Stop();
+        bluetoothDialog.setDialogInterface(this);
     }
 }

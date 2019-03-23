@@ -144,13 +144,15 @@ public class ProfileManagement {
 
         hospitalNameSaveButton.setOnClickListener(v -> {
 
-            Log.d("selected patientid ",selectedPatientId+"" +selectedHospitalId);
+            Log.d("selected patientid ",selectedPatientId+"   " +selectedHospitalId);
 
                String hospitalName = hospitalNameField.getText().toString().trim();
 
                if(selectedHospitalId <1 && !hospitalName.isEmpty() ){
 
                    CreateHospital(hospitalName);
+
+                   Log.d("selected patientid","crating "+ selectedHospitalId);
 
                }else{
 
@@ -171,6 +173,8 @@ public class ProfileManagement {
 
 
                if(selectedHospitalId< 1){
+
+                   Log.d("selected patientid","dissmingg");
 
                    dialog.dismiss();
                }
@@ -200,13 +204,17 @@ public class ProfileManagement {
 
                         UpdatePateint(pateintName);
 
+                        Log.d("selected patientid","updated");
+
                     }
                }
 
 
                if(selectedPatientId > 0){
+
                    Log.d("selected patientid ",selectedPatientId+"");
-                   profileManagementInterface.onComplete(selectedHospitalId);
+
+                   profileManagementInterface.onComplete(selectedPatientId);
                }
 
                dialog.dismiss();
@@ -260,8 +268,11 @@ public class ProfileManagement {
         PatientModel patientModel = new PatientModel();
 
         patientModel.setFirstName("");
+
         patientModel.setId(0);
+
         patientModel.setHospitalId(0);
+
         patienList.add(0,patientModel);
 
         this.patienList.addAll(DataBaseHandler.getInstance().getDB().getPatientDao().getPatients());
@@ -426,6 +437,7 @@ public class ProfileManagement {
 
         selectedHospitalId = DataBaseHandler.getInstance().getDB()
                     .getHospitalDao().insertHospital(hospitalModel);
+
         ReloadHospitalList();
     }
 

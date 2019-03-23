@@ -1,6 +1,9 @@
 package BluetoothHandler;
 
-import android.app.Activity;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -10,7 +13,12 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import BluetoothParser.BloodPressurePaser;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import mahidoleg.patientmonitoring.R;
 
 public class BloodPressureHandler extends BaseHandler {
 
@@ -41,15 +49,23 @@ public class BloodPressureHandler extends BaseHandler {
     public  int PUL_L = 8;
     public  int END = 9;
 
-    private TextView systolicField;
 
-    private TextView diastolicField;
+    @BindView(R.id.cuff_pressure)
+    TextView cuffPressureField;
 
-    private TextView pulseField;
+    @BindView(R.id.diastolic)
+    TextView diastolicField;
 
-    private TextView cuffPressureField;
+    @BindView(R.id.systolic)
 
-    private LineChart chart;
+    TextView systolicField;
+
+    @BindView(R.id.pulse)
+
+    TextView pulseField;
+
+    @BindView(R.id.chart)
+    LineChart chart;
 
     private LineDataSet pulseDataSet;
 
@@ -57,16 +73,49 @@ public class BloodPressureHandler extends BaseHandler {
 
     private LineDataSet diastolicDataSet;
 
+    private Unbinder unbinder;
+
+    public synchronized  static BloodPressureHandler newInstance(int page, String title) {
+
+        BloodPressureHandler fragmentFirst = new BloodPressureHandler();
+
+        Bundle args = new Bundle();
+
+        fragmentFirst.setArguments(args);
+
+        return fragmentFirst;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
-    private BloodPressurePaser paser;
+        View view = inflater.inflate(R.layout.blood_pressure_layout,container,false);
 
-    public BloodPressureHandler(Activity activity) {
+        unbinder = ButterKnife.bind(this,view);
 
-        super(activity);
+        return view;
 
-        paser = new BloodPressurePaser();
+    }
 
+
+
+
+    @Override
+    public void onDestroyView() {
+
+        super.onDestroyView();
+
+        unbinder.unbind();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+
+        super.onActivityCreated(savedInstanceState);
+
+        SetUp(getActivity());
     }
 
     @Override
@@ -87,7 +136,9 @@ public class BloodPressureHandler extends BaseHandler {
 
                 cuffPressure = (tmp << 8) + x;
 
-                cuffPressureField.setText(String.valueOf(cuffPressure));
+                if(this.isVisible()) {
+                    cuffPressureField.setText(String.valueOf(cuffPressure));
+                }
 
                 this.setBP();
 
@@ -100,7 +151,10 @@ public class BloodPressureHandler extends BaseHandler {
 
                 systolicPressure = (tmp << 8) + x;
 
-                systolicField.setText(String.valueOf(systolicPressure));
+                if(this.isVisible()) {
+
+                    systolicField.setText(String.valueOf(systolicPressure));
+                }
 
                 this.setBP();
 
@@ -116,8 +170,10 @@ public class BloodPressureHandler extends BaseHandler {
 
                 diastolicPressure = (tmp << 8) + x;
 
-                diastolicField.setText(String.valueOf(diastolicPressure));
+                if(this.isVisible()) {
+                    diastolicField.setText(String.valueOf(diastolicPressure));
 
+                }
                 this.setBP();
 
                 tmp = 0;
@@ -161,25 +217,6 @@ public class BloodPressureHandler extends BaseHandler {
 
     }
 
-    public void setSystolicField(TextView systolicField) {
-
-        this.systolicField = systolicField;
-
-
-    }
-
-    public void setDiastolicField(TextView diastolicField) {
-
-        this.diastolicField = diastolicField;
-
-    }
-
-    public void setPulseField(TextView pulseField) {
-
-        this.pulseField = pulseField;
-
-    }
-
     private void setBP(){
 
 
@@ -197,20 +234,13 @@ public class BloodPressureHandler extends BaseHandler {
 
         diastolicDataSet.addEntry(diastolicData);
 
-        chart.notifyDataSetChanged();
+        if(this.isVisible()) {
 
-        chart.invalidate();
+            chart.notifyDataSetChanged();
 
-    }
-
-    public void setCuffPressureField(TextView cuffPressureField) {
-
-        this.cuffPressureField = cuffPressureField;
+            chart.invalidate();
+        }
 
     }
 
-
-    public void setChart(LineChart chart) {
-        this.chart = chart;
-    }
 }

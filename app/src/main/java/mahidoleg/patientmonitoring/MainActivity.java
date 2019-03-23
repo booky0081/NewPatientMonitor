@@ -2,29 +2,26 @@ package mahidoleg.patientmonitoring;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.google.android.material.button.MaterialButton;
 import com.nightonke.boommenu.BoomButtons.HamButton;
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
 import com.nightonke.boommenu.BoomMenuButton;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import BluetoothHandler.BloodPressureHandler;
 import Database.DataBaseHandler;
+import Dialog.BluetoothDialog;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import me.aflak.bluetooth.Bluetooth;
 
 //import Dialog.BluetoothDialog;
 
@@ -38,49 +35,15 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
     @BindView(R.id.main_menu_toolbar)
     Toolbar toolbar;
 
-
-
-
-    @BindView(R.id.blood_pressure_manage_button)
-    MaterialButton bloodPressureManageButton;
-
-    @BindView(R.id.blood_pressure_connect_button)
-
-    MaterialButton bloodPressureConnectButton;
-
-    @BindView(R.id.blood_pressure_patient_name)
-    TextView bloodPressurePatientNameField;
-
-    @BindView(R.id.blood_pressure_hospital_id)
-    TextView bloodPressureHospitalIdField;
-
-    @BindView(R.id.blood_pressure_bluetooth_status)
-    TextView bloodPressureBluetoothStatus;
-
-    @BindView(R.id.blood_pressure_bluetooth_name)
-    TextView bloodPressureBlueToothName;
-
-    @BindView(R.id.cuff_pressure)
-    TextView cuffPressureField;
-
-    @BindView(R.id.diastolic)
-    TextView diastolicField;
-
-    @BindView(R.id.systolic)
-
-    TextView systolicField;
-
-    @BindView(R.id.pulse)
-
-    TextView pulseField;
-
-    @BindView(R.id.chart)
-    LineChart chart;
-
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
 
     private BloodPressureHandler bloodPressureHandler;
 
-    private Bluetooth pairedBluetooth ;
+    private BluetoothDialog bloodPressureBluetooth;
+
+    private ViewPagerAdapter viewPagerAdapter;
+
     private Unbinder unbinder;
 
     private String[] menuButton = {"LOGIN", "DISCLAIMER", "MORE"};
@@ -89,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
     private static boolean loggedIn = false;
 
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main_menu);
-  //tansOnCreate();
+
         unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -111,19 +75,15 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
             bmb.addBuilder(builder);
         }
 
-        pairedBluetooth = new Bluetooth(this);
-        this.SetUpBloodPressureSection(this);
-        this.bloodPressureHandler.init(pairedBluetooth);
+        activity = this;
 
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        viewPager.setAdapter(viewPagerAdapter);
 
-       // this.SetUpSamepleChart();
-
-
+        bloodPressureBluetooth = new BluetoothDialog(activity);
 
     }
-
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -134,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
     protected void onResume() {
 
         super.onResume();
-
-
 
         if (loggedIn) {
             HamButton.Builder builder = (HamButton.Builder) bmb.getBuilder(0);
@@ -185,49 +143,53 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         startActivityForResult(loginIntent, LOGININTENT);
     }
 
-    private void SetUpSamepleChart() {
-        List<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            entries.add(new Entry(i, i));
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+
+        public ViewPagerAdapter(@NonNull FragmentManager fm) {
+            super(fm);
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "test");
-        LineData lineData = new LineData(dataSet);
-        chart.setData(lineData);
-        chart.invalidate();
-    }
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
 
-    private void SetUpBloodPressureSection(Activity activity){
+            switch(position){
 
-        if(bloodPressureHandler == null){
+                case 0 :
 
-            bloodPressureHandler = new BloodPressureHandler(activity);
+                    bloodPressureHandler =  BloodPressureHandler.newInstance(1,"Blood pressure");
 
-            bloodPressureHandler.setPatientNameField(bloodPressurePatientNameField);
 
-            bloodPressureHandler.setHospitalNameField(bloodPressureHospitalIdField);
+                    bloodPressureHandler.setBluetoothDialog(bloodPressureBluetooth);
 
-            bloodPressureHandler.setBluetoothStatusField(bloodPressureBluetoothStatus);
+                    return bloodPressureHandler;
 
-            bloodPressureHandler.setBluetoothNameField(bloodPressurePatientNameField);
+            }
 
-            bloodPressureHandler.setBluetoothConnectButton(bloodPressureConnectButton);
+            return null;
+        }
 
-            bloodPressureHandler.setProfileManageButton(bloodPressureManageButton);
+        @Override
+        public int getCount() {
+            return 1;
+        }
 
-            bloodPressureHandler.setCuffPressureField(cuffPressureField);
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Blood Pressure";
+                case 1:
+                    return "EKG";
+                case 2:
+                    return "Water Pressure";
+            }
 
-            bloodPressureHandler.setDiastolicField(diastolicField);
-
-            bloodPressureHandler.setPulseField(pulseField);
-
-            bloodPressureHandler.setSystolicField(systolicField);
-
-            bloodPressureHandler.setChart(chart);
+            return null;
         }
 
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
@@ -240,19 +202,23 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         }
     }
 
+
     @Override
     protected void onStart() {
 
         super.onStart();
-        pairedBluetooth.onStart();
-        pairedBluetooth.enable();
+
+        bloodPressureBluetooth.Start();
+
 
     }
 
     @Override
     protected void onStop() {
+
         super.onStop();
-        pairedBluetooth.onStop();
+
+        bloodPressureBluetooth.Stop();
 
 
     }
@@ -260,8 +226,10 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
     ;
     /*
     /* TAN'S BULLSHIT */
+
+   // private Bluetooth pairedBluetooth;
+
     /*
-    private Bluetooth pairedBluetooth;
     private ListView deviceList;
     private TextView stateText;
     private TextView cuffPressureText;
@@ -438,15 +406,15 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         }
     }
 
-    */
-    /*
+
+
     public class BluetoothDialog {
 
         @BindView(R.id.state_text)
         TextView stateText;
 
         @BindView(R.id.device_list)
-        ListView  deviceList;
+        ListView deviceList;
 
         @BindView(R.id.refresh_button)
         Button refreshButton;
@@ -512,5 +480,23 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         }
     }
     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+
+                }
+                return;
+            }
+
+
+        }
+    }
 
 }
