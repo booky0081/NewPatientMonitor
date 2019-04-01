@@ -10,4 +10,7 @@ public interface DialogInterface {
 
      void onConnected(String device);
 
+     void onObject(Object object);
+
+
 }

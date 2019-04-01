@@ -12,19 +12,19 @@ import androidx.room.Query;
 @Dao
 public interface HospitalDoa {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertHospital(HospitalModel  hospitalModel);
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        long insertHospital(HospitalModel  hospitalModel);
 
-    @Delete
-    void delete(HospitalModel hospitalModel);
+        @Delete
+        void delete(HospitalModel hospitalModel);
 
-    @Query("UPDATE Hospital Set hospital_name = :name where id =:id")
-    void update(String name,long id);
+        @Query("UPDATE Hospital Set hospital_name = :name where id =:id")
+        void update(String name,long id);
 
-    @Query("SELECT * FROM Hospital")
-    List<HospitalModel> getHospitals();
+        @Query("SELECT * FROM Hospital")
+        List<HospitalModel> getHospitals();
 
-    @Query("SELECT * FROM Hospital where id = :id")
-    HospitalModel getHospital(long id);
+        @Query("SELECT * FROM Hospital where id = :id")
+        HospitalModel getHospital(long id);
 
 }

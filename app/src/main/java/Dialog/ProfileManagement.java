@@ -236,13 +236,6 @@ public class ProfileManagement {
 
         this.hospitalList.addAll(DataBaseHandler.getInstance().getDB().getHospitalDao().getHospitals());
 
-        /*
-        for(int i=0;i<hospitalList.size();i++){
-
-            Log.d("hospital name", hospitalList.get(i).getHosipitalName() + hospitalList.get(i).getId());
-        }
-
-*/
         HospitalModelAdapter hospitalAdapter = (HospitalModelAdapter)hospitalSpinner.getAdapter();
 
         hospitalAdapter.SetData(hospitalList);
@@ -277,11 +270,6 @@ public class ProfileManagement {
 
         this.patienList.addAll(DataBaseHandler.getInstance().getDB().getPatientDao().getPatients());
 
-       /* for(int i=0;i<patienList.size();i++){
-
-            Log.d("patient name", patienList.get(i).getFirstName() + patienList.get(i).getId());
-        }
-*/
         PatientAdapter patientAdapter = (PatientAdapter) patienSpinner.getAdapter();
 
         patientAdapter.SetData(patienList);

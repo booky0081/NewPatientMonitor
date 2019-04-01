@@ -52,6 +52,7 @@
         android:textSize="14sp"
         android:ems="8"
         android:textStyle="bold"
+        app:layout_alignSelf="flex_start"
         android:text="SAVE"/>
 
     </com.google.android.flexbox.FlexboxLayout>

@@ -1,18 +1,29 @@
 package BluetoothHandler;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import DataHandler.BloodPressureDataHandler;
+import DataModel.BloodPressureHistoryModel;
+import DataModel.BloodPressureModel;
+import Database.DataBaseHandler;
+import Dialog.BloodPressureHistoryAdapter;
+import Dialog.BluetoothDialog;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import butterknife.BindView;
@@ -22,36 +33,6 @@ import mahidoleg.patientmonitoring.R;
 
 public class BloodPressureHandler extends BaseHandler {
 
-    private long count = 0;
-
-    private long systolicPressure = 0;
-
-    private long diastolicPressure = 0;
-
-    private long pulseRate = 0;
-
-    private long cuffPressure = 0;
-
-    private long currentElasped;
-
-    private long currentTime;
-    private int state;
-
-    public int UNKNOWN = -1;
-    public  int BEGIN = 0;
-    public  int CUFF_H = 1;
-    public  int CUFF_L = 2;
-    public  int SYS_H = 3;
-    public  int SYS_L = 4;
-    public  int DIA_H = 5;
-    public  int DIA_L = 6;
-    public  int PUL_H = 7;
-    public  int PUL_L = 8;
-    public  int END = 9;
-
-
-    @BindView(R.id.cuff_pressure)
-    TextView cuffPressureField;
 
     @BindView(R.id.diastolic)
     TextView diastolicField;
@@ -73,6 +54,8 @@ public class BloodPressureHandler extends BaseHandler {
 
     private LineDataSet diastolicDataSet;
 
+    private BloodPressureHistoryAdapter bloodPressureHistoryAdapter;
+
     private Unbinder unbinder;
 
     public synchronized  static BloodPressureHandler newInstance(int page, String title) {
@@ -90,17 +73,32 @@ public class BloodPressureHandler extends BaseHandler {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-
         View view = inflater.inflate(R.layout.blood_pressure_layout,container,false);
 
         unbinder = ButterKnife.bind(this,view);
 
+        XAxis xAxis = chart.getXAxis();
+
+        xAxis.setValueFormatter((value, axis) -> {
+
+            int myValue = Math.round(value);
+
+
+            int hours = myValue / 3600;
+
+            int minutes = ( myValue%3600)/60;
+
+            int seconds = (myValue%3600)%60;
+
+            return hours+":"+minutes+":"+seconds;
+
+        });
+
         return view;
 
+
+
     }
-
-
-
 
     @Override
     public void onDestroyView() {
@@ -116,130 +114,170 @@ public class BloodPressureHandler extends BaseHandler {
         super.onActivityCreated(savedInstanceState);
 
         SetUp(getActivity());
+
+
+        bloodPressureHistoryAdapter = new BloodPressureHistoryAdapter(getActivity(),R.layout.blood_pressure_history_layout);
+
+        this.historyDialog.setAdapter(bloodPressureHistoryAdapter);
+
+        this.ReloadChart();
+
+    }
+
+    @Override
+    protected void reloadHistory() {
+
+        bloodPressureHistoryAdapter.SetData();
     }
 
     @Override
     protected void Parse(String message) {
 
-
-        int tmp = 0;
-
-        for (char x : message.toCharArray()) {
-
-            if (x == '\2') {
-                state = BEGIN;
-            }
-            else if (state == BEGIN) {
-                tmp = x;
-                state = CUFF_H;
-            } else if (state == CUFF_H) {
-
-                cuffPressure = (tmp << 8) + x;
-
-                if(this.isVisible()) {
-                    cuffPressureField.setText(String.valueOf(cuffPressure));
-                }
-
-                this.setBP();
-
-                tmp = 0;
-                state = CUFF_L;
-            } else if (state == CUFF_L) {
-                tmp = x;
-                state = SYS_H;
-            } else if (state == SYS_H) {
-
-                systolicPressure = (tmp << 8) + x;
-
-                if(this.isVisible()) {
-
-                    systolicField.setText(String.valueOf(systolicPressure));
-                }
-
-                this.setBP();
-
-                tmp = 0;
-                state = SYS_L;
-            } else if (state == SYS_L) {
-
-                tmp = x;
-
-                state = DIA_H;
-
-            } else if (state == DIA_H) {
-
-                diastolicPressure = (tmp << 8) + x;
-
-                if(this.isVisible()) {
-                    diastolicField.setText(String.valueOf(diastolicPressure));
-
-                }
-                this.setBP();
-
-                tmp = 0;
-
-                state = DIA_L;
-            } else if (state == DIA_L) {
-                tmp = x;
-                state = PUL_H;
-            } else if (state == PUL_H) {
-                pulseRate = (tmp << 8) + x;
-                tmp = 0;
-                state = PUL_L;
-            } else if (state == PUL_L && x == '\3') {
-                state = END;
-
-            } else if (x == '\r' && state == END) {
-                state = UNKNOWN;
-            }
-        }
+        setBP(BloodPressureDataHandler.getInstance().getLastest());
 
     }
 
     @Override
     protected void Start() {
 
-        List<Entry> entries = new ArrayList<>();
-        this.diastolicDataSet = new LineDataSet(entries,"disastolic");
+        BloodPressureDataHandler.getInstance().setDeviceMetaId(currentDeviceMeta);
 
-        List<Entry> entries2 = new ArrayList<>();
-        this.systolicDataSet = new LineDataSet(entries2,"systolicD");
-
-        List<Entry> entries3 = new ArrayList<>();
-        this.pulseDataSet = new LineDataSet(entries3,"pulse");
-
-        this.currentTime = System.currentTimeMillis();
-        this.currentElasped = 0;
     }
 
     @Override
     protected void Stop() {
 
+        ReloadChart();
     }
 
-    private void setBP(){
+    private void setBP(BloodPressureModel bloodPressureModel){
 
 
-        this.currentElasped = System.currentTimeMillis() - this.currentTime;
+        long diastolic = bloodPressureModel.getDiastolic();
 
-        Entry diastolicData = new Entry(this.diastolicPressure,currentElasped);
+        this.diastolicField.setText(Long.toString(diastolic));
 
-        Entry systolicData = new Entry(this.systolicPressure,currentElasped);
+        long systolic = bloodPressureModel.getSystolic();
 
-        Entry pulseData = new Entry(this.pulseRate,currentElasped);
+        this.systolicField.setText(Long.toString(systolic));
 
-        pulseDataSet.addEntry(pulseData);
+        long pulse = bloodPressureModel.getPulse();
 
-        systolicDataSet.addEntry(systolicData);
+        this.pulseField.setText(Long.toString(pulse));
 
-        diastolicDataSet.addEntry(diastolicData);
+    }
 
-        if(this.isVisible()) {
 
-            chart.notifyDataSetChanged();
+    @Override
+    public void onObject(Object object) {
 
-            chart.invalidate();
+       setBP((BloodPressureModel)object);
+
+    }
+
+    @Override
+    public void setBluetoothDialog(BluetoothDialog bluetoothDialog){
+
+        this.bluetoothDialog = bluetoothDialog;
+        bluetoothDialog.setDialogInterface(this);
+
+    }
+
+    public void setData(List<BloodPressureModel> data){
+
+
+    }
+
+    private void ReloadChart(){
+
+        List<BloodPressureHistoryModel> bloodPressureModelList = DataBaseHandler.getInstance().getDB().bloodPressureDao().getTodayData();
+
+        if(pulseDataSet==null) {
+
+            List<Entry> pulseDataList = new ArrayList<>();
+            pulseDataSet = new LineDataSet(pulseDataList, "Pulse");
+            pulseDataSet.setColor(R.color.colorPrimaryDark);
+            pulseDataSet.setColor(R.color.colorPrimaryDark);
+
+        }else{
+
+            pulseDataSet.clear();
         }
+
+        if(systolicDataSet==null){
+
+            List<Entry> systolicDataList = new ArrayList<>();
+            systolicDataSet = new LineDataSet(systolicDataList,"Systolic");
+
+            systolicDataSet.setColor(R.color.skyBlue);
+            systolicDataSet.setCircleColor(R.color.skyBlue);
+
+        }else{
+
+            systolicDataSet.clear();
+        }
+
+        if(diastolicDataSet==null){
+
+            List<Entry> diastolicDataList = new ArrayList<>();
+            diastolicDataSet = new LineDataSet(diastolicDataList,"Diastolic");
+            diastolicDataSet.setColor(R.color.darkBlue);
+            diastolicDataSet.setColor(R.color.darkBlue);
+
+        }else{
+
+            diastolicDataSet.clear();
+        }
+
+        Log.d("History", bloodPressureModelList.size()+"");
+
+        for(BloodPressureHistoryModel bloodPressureModel : bloodPressureModelList){
+
+            Calendar cal = Calendar.getInstance();
+
+            cal.setTime(bloodPressureModel.getCreateDate());
+
+            Log.d("CHART ", bloodPressureModel.getDeviceName());
+
+            long hour = cal.get(Calendar.HOUR_OF_DAY);
+
+            long minutes = cal.get(Calendar.MINUTE);
+
+            long seconds = cal.get(Calendar.SECOND);
+
+            minutes = minutes*60;
+
+            hour = hour*60*60;
+
+
+            long total = minutes+hour+seconds;
+
+
+            Entry pulseData = new Entry(total,bloodPressureModel.getPulse());
+
+            pulseDataSet.addEntry(pulseData);
+
+            Entry systolicData = new Entry(total,bloodPressureModel.getSystolic());
+
+            systolicDataSet.addEntry((systolicData));
+
+            Entry diastolicData = new Entry(total,bloodPressureModel.getDiastolic());
+
+            diastolicDataSet.addEntry(diastolicData);
+        }
+
+        List<ILineDataSet> dataSets = new ArrayList<>();
+
+        dataSets.add(pulseDataSet);
+        dataSets.add(diastolicDataSet);
+        dataSets.add(systolicDataSet);
+
+        LineData lineData = new LineData(dataSets);
+
+        chart.setData(lineData);
+
+        chart.invalidate();
+
 
     }
 

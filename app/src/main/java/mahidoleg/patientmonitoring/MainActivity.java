@@ -4,15 +4,25 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.nightonke.boommenu.BoomButtons.HamButton;
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
 import com.nightonke.boommenu.BoomMenuButton;
 
+import java.util.List;
+
+import API.Base.APIClientInterface;
+import API.Patient.PatientAPIClient;
 import BluetoothHandler.BloodPressureHandler;
+import DataHandler.BloodPressureDataHandler;
+import DataHandler.SyncDataHandler;
+import DataModel.PatientModel;
 import Database.DataBaseHandler;
+import Dialog.BloodPressureBluetoothDialog;
 import Dialog.BluetoothDialog;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -42,11 +52,13 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
     private BluetoothDialog bloodPressureBluetooth;
 
+    private BloodPressureDataHandler bloodPressureDataHandler;
+
     private ViewPagerAdapter viewPagerAdapter;
 
     private Unbinder unbinder;
 
-    private String[] menuButton = {"LOGIN", "DISCLAIMER", "MORE"};
+    private String[] menuButton = {"LOGIN", "SYNC", "MORE"};
 
     private static final int LOGININTENT = 1;
 
@@ -75,13 +87,19 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
             bmb.addBuilder(builder);
         }
 
+
+
         activity = this;
 
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(viewPagerAdapter);
 
-        bloodPressureBluetooth = new BluetoothDialog(activity);
+        bloodPressureDataHandler = BloodPressureDataHandler.getInstance();
+
+        bloodPressureBluetooth = new BloodPressureBluetoothDialog(activity);
+
+        bloodPressureBluetooth.setDialogDataInterface(bloodPressureDataHandler);
 
     }
 
@@ -117,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
     @Override
     public void onBoomButtonClick(int index) {
 
-
         if (index == 0) {
 
             if (!loggedIn) {
@@ -134,6 +151,70 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
                 }
             }
 
+        }else if (index == 1 ){
+
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+            SyncDataHandler syncDataHandler = new SyncDataHandler();
+
+            syncDataHandler.setContinueOnFilaure(false);
+
+
+
+            syncDataHandler.setSyncInterface(new SyncDataHandler.SyncInterface() {
+
+                @Override
+                public void onSyncFinished(int id) {
+
+
+                    alertDialog.setMessage("Finished Sync " + id);
+                }
+
+                @Override
+                public void onSynFailed(int id, String mesage) {
+
+                    alertDialog.setMessage("Failed Sync " + id  +" : with " + mesage);
+                }
+
+                @Override
+                public void onCompleted(boolean success) {
+
+                    if(success) {
+
+                        alertDialog.setMessage("Finished All Sync");
+
+                    }else{
+
+                        alertDialog.setMessage("Not All Data Has Been uploaded");
+                    }
+
+                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setText("ClOSE");
+
+                }
+
+                @Override
+                public void onCanceled() {
+
+                    alertDialog.dismiss();
+                }
+            });
+
+
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> {
+
+                syncDataHandler.Canceled();
+
+            });
+
+            alertDialog.setCanceledOnTouchOutside(false);
+
+            alertDialog.setCancelable(false);
+
+            alertDialog.setTitle("Syncing Data");
+
+            alertDialog.setMessage("Please Wait");
+            alertDialog.show();
+            syncDataHandler.Sync();
         }
     }
 
@@ -160,8 +241,14 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
                     bloodPressureHandler =  BloodPressureHandler.newInstance(1,"Blood pressure");
 
-
                     bloodPressureHandler.setBluetoothDialog(bloodPressureBluetooth);
+
+                    if(bloodPressureDataHandler.getBloodPressureModelArrayList() != null && !
+                            bloodPressureDataHandler.getBloodPressureModelArrayList().isEmpty()){
+
+                        bloodPressureHandler.setData(bloodPressureDataHandler.getBloodPressureModelArrayList());
+
+                    }
 
                     return bloodPressureHandler;
 
@@ -210,6 +297,8 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
         bloodPressureBluetooth.Start();
 
+        Test();
+
 
     }
 
@@ -220,7 +309,37 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
         bloodPressureBluetooth.Stop();
 
+    }
 
+    private void Test(){
+
+        List<PatientModel> patientModelList = DataBaseHandler.getInstance().getDB().getPatientDao().getPatients();
+
+        PatientAPIClient patientAPIClient = new PatientAPIClient();
+
+        patientAPIClient.Post(patientModelList, new APIClientInterface() {
+
+            @Override
+            public void onResponseData(Object object) {
+
+            }
+
+            @Override
+            public void onReponse() {
+
+            }
+
+            @Override
+            public void onError(String message) {
+
+                    Log.d("TEST API", message);
+            }
+
+            @Override
+            public void onDone() {
+
+            }
+        });
     }
 
     ;

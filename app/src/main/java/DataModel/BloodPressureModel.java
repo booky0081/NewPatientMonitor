@@ -1,12 +1,13 @@
 package DataModel;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "BloodPressure",indices = {@Index(value = {"device_id"}
-)})
+@Entity(tableName = "BloodPressure")
 
 public class BloodPressureModel {
 
@@ -14,35 +15,68 @@ public class BloodPressureModel {
 
     private int id;
 
-    @ColumnInfo(name = "device_id")
+    @SerializedName("diastolic")
+    @Expose
+    @ColumnInfo(name = "diastolic")
 
-    private String deviceId;
+    private  long diastolic;
+
+
+    @SerializedName("systolic")
+    @Expose
+    @ColumnInfo(name = "systolic")
+    private long systolic;
+
+
+    @SerializedName("pulse")
+    @Expose
+    @ColumnInfo(name= "pulse")
+    private long pulse;
+
+
+    @SerializedName("deviceId")
+    @Expose
+    @ColumnInfo(name = "meta_id")
+    private long metaId;
 
     public int getId() {
         return id;
-    }
-
-    public long getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(long patientId) {
-        this.patientId = patientId;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    private long patientId ;
-
-
-
-    public String getDeviceId() {
-        return deviceId;
+    public long getDiastolic() {
+        return diastolic;
     }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
+    public void setDiastolic(long diastolic) {
+        this.diastolic = diastolic;
+    }
+
+    public long getSystolic() {
+        return systolic;
+    }
+
+    public void setSystolic(long systolic) {
+        this.systolic = systolic;
+    }
+
+    public long getPulse() {
+        return pulse;
+    }
+
+    public void setPulse(long pulse) {
+        this.pulse = pulse;
+    }
+
+
+    public long getMetaId() {
+        return metaId;
+    }
+
+    public void setMetaId(long metaId) {
+        this.metaId = metaId;
     }
 }

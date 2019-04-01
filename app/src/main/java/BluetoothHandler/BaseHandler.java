@@ -6,11 +6,15 @@ import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 
+import java.util.Date;
+
+import DataModel.DeviceModel;
 import DataModel.HospitalModel;
 import DataModel.PatientModel;
 import Database.DataBaseHandler;
 import Dialog.BluetoothDialog;
 import Dialog.DialogInterface;
+import Dialog.HistoryDialog;
 import Dialog.ProfileManagement;
 import Dialog.ProfileManagementInterface;
 import androidx.fragment.app.Fragment;
@@ -37,14 +41,20 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
     @BindView(R.id.blood_pressure_connect_button)
     MaterialButton bluetoothConnectButton;
 
+    @BindView(R.id.blood_pressure_history_button)
+    MaterialButton historyButton;
 
     private ProfileManagement profileManagement;
 
     private ProfileManagementInterface profileManagementInterface;
 
-    private BluetoothDialog bluetoothDialog;
+    protected BluetoothDialog bluetoothDialog;
 
     private long selectedPatientId = -1;
+
+    protected long currentDeviceMeta = -1;
+
+    protected HistoryDialog historyDialog;
 
     private boolean isRunning = false;
 
@@ -64,7 +74,19 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
         }
 
 
+        if(historyDialog == null){
+
+            historyDialog = new HistoryDialog(activity);
+
+            historyButton.setOnClickListener(v -> {
+
+                reloadHistory();
+                historyDialog.show();
+            });
+        }
     }
+
+    protected abstract void reloadHistory();
 
     @Override
     public void onStart() {
@@ -112,14 +134,12 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
 
                     if (!isRunning) {
 
-                        if(bluetoothDialog!=null) {
-                            bluetoothDialog.Show();
-                        }
+                        bluetoothDialog.Show();
 
                     } else {
 
                         if(bluetoothDialog != null ) {
-                            bluetoothDialog.Stop();
+                            bluetoothDialog.Disconnect();
                         }
 
                         isRunning = !isRunning;
@@ -151,6 +171,12 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
 
         bluetoothStatusField.setText("Disconnected");
 
+        this.Stop();
+
+       // DataBaseHandler.getInstance().getDB().deviceDao().stop(new Date(System.currentTimeMillis()),currentDeviceMeta);
+
+        this.profileManageButton.setEnabled(true);
+
     }
 
     protected abstract void Start();
@@ -166,6 +192,22 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
         profileManageButton.setEnabled(false);
 
         bluetoothNameField.setText(deviceName);
+
+        this.profileManageButton.setEnabled(false);
+
+        DeviceModel deviceModel = new DeviceModel();
+
+        deviceModel.setPatientId(selectedPatientId);
+
+        deviceModel.setCreateDate(new Date(System.currentTimeMillis()));
+
+        deviceModel.setDeviceId(1);
+
+        deviceModel.setDeviceName(bluetoothDialog.getDeviceName());
+
+        currentDeviceMeta = DataBaseHandler.getInstance().getDB().deviceDao().insertMetadata(deviceModel);
+
+        bluetoothDialog.dismiss();
 
         Start();
     }
@@ -204,7 +246,6 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
 
                 hospitalNameField.setText(hospitalModel.getHosipitalName());
             }
-
 
             if(profileManageButton!=null){
 

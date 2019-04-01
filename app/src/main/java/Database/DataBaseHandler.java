@@ -28,7 +28,7 @@ public class DataBaseHandler {
 
     private DataBaseHandler(Context context) {
 
-         db =  Room.databaseBuilder(context, Database.class, "PatientOMeterDB").allowMainThreadQueries().build();
+         db =  Room.databaseBuilder(context, Database.class, "PatientOMeterDB").allowMainThreadQueries().fallbackToDestructiveMigration().build();
     }
 
 }

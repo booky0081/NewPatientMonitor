@@ -1,5 +1,8 @@
 package DataModel;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
@@ -11,6 +14,8 @@ public class PatientModel {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @SerializedName("firstName")
+    @Expose
     @ColumnInfo(name = "first_name")
     private String firstName;
 
