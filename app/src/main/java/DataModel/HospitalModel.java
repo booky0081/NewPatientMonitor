@@ -18,7 +18,6 @@ public class HospitalModel {
     @ColumnInfo(name = "hospital_name")
     private String hosipitalName;
 
-
     public int getId() {
         return id;
     }

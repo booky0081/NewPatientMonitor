@@ -1,29 +1,15 @@
 package BluetoothHandler;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import DataHandler.BloodPressureDataHandler;
-import DataModel.BloodPressureHistoryModel;
 import DataModel.BloodPressureModel;
-import Database.DataBaseHandler;
-import Dialog.BloodPressureHistoryAdapter;
-import Dialog.BluetoothDialog;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import butterknife.BindView;
@@ -44,17 +30,19 @@ public class BloodPressureHandler extends BaseHandler {
     @BindView(R.id.pulse)
 
     TextView pulseField;
-
+    /*
     @BindView(R.id.chart)
     LineChart chart;
+
 
     private LineDataSet pulseDataSet;
 
     private LineDataSet systolicDataSet;
 
     private LineDataSet diastolicDataSet;
+    */
 
-    private BloodPressureHistoryAdapter bloodPressureHistoryAdapter;
+  //  private BloodPressureHistoryAdapter bloodPressureHistoryAdapter;
 
     private Unbinder unbinder;
 
@@ -76,7 +64,7 @@ public class BloodPressureHandler extends BaseHandler {
         View view = inflater.inflate(R.layout.blood_pressure_layout,container,false);
 
         unbinder = ButterKnife.bind(this,view);
-
+        /*
         XAxis xAxis = chart.getXAxis();
 
         xAxis.setValueFormatter((value, axis) -> {
@@ -94,9 +82,8 @@ public class BloodPressureHandler extends BaseHandler {
 
         });
 
+        */
         return view;
-
-
 
     }
 
@@ -104,6 +91,7 @@ public class BloodPressureHandler extends BaseHandler {
     public void onDestroyView() {
 
         super.onDestroyView();
+
 
         unbinder.unbind();
     }
@@ -114,26 +102,26 @@ public class BloodPressureHandler extends BaseHandler {
         super.onActivityCreated(savedInstanceState);
 
         SetUp(getActivity());
-
-
+    /*
         bloodPressureHistoryAdapter = new BloodPressureHistoryAdapter(getActivity(),R.layout.blood_pressure_history_layout);
 
         this.historyDialog.setAdapter(bloodPressureHistoryAdapter);
 
         this.ReloadChart();
 
+    */
     }
 
-    @Override
-    protected void reloadHistory() {
 
-        bloodPressureHistoryAdapter.SetData();
-    }
 
     @Override
     protected void Parse(String message) {
 
-        setBP(BloodPressureDataHandler.getInstance().getLastest());
+        BloodPressureModel bloodPressureModel = BloodPressureDataHandler.getInstance().getLastest();
+        if(bloodPressureModel!=null){
+
+            setBP(bloodPressureModel);
+        }
 
     }
 
@@ -147,7 +135,7 @@ public class BloodPressureHandler extends BaseHandler {
     @Override
     protected void Stop() {
 
-        ReloadChart();
+      //  ReloadChart();
     }
 
     private void setBP(BloodPressureModel bloodPressureModel){
@@ -175,6 +163,8 @@ public class BloodPressureHandler extends BaseHandler {
 
     }
 
+
+    /*
     @Override
     public void setBluetoothDialog(BluetoothDialog bluetoothDialog){
 
@@ -183,11 +173,15 @@ public class BloodPressureHandler extends BaseHandler {
 
     }
 
+
+*/
+
     public void setData(List<BloodPressureModel> data){
 
 
     }
 
+    /*
     private void ReloadChart(){
 
         List<BloodPressureHistoryModel> bloodPressureModelList = DataBaseHandler.getInstance().getDB().bloodPressureDao().getTodayData();
@@ -237,7 +231,7 @@ public class BloodPressureHandler extends BaseHandler {
 
             cal.setTime(bloodPressureModel.getCreateDate());
 
-            Log.d("CHART ", bloodPressureModel.getDeviceName());
+           // Log.d("CHART ", bloodPressureModel.getDeviceName());
 
             long hour = cal.get(Calendar.HOUR_OF_DAY);
 
@@ -280,5 +274,6 @@ public class BloodPressureHandler extends BaseHandler {
 
 
     }
+    */
 
 }

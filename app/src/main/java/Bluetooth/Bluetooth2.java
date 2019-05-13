@@ -51,7 +51,8 @@ public class Bluetooth2 {
 
     public Bluetooth2(Context context){
 
-        initialize(context, UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"));
+        initialize(context, UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+
     }
 
     public Bluetooth2(Context context, UUID uuid){
@@ -293,6 +294,9 @@ public class Bluetooth2 {
                         ThreadHelper.run(runOnUi, activity, new Runnable() {
                             @Override
                             public void run() {
+
+                               // Log.d("Bluetooth2","RecievedData" + deviceCallback.getClass());
+                              //  deviceCallback.onMessage(msgCopy);
                                 deviceCallback.onMessage(msgCopy);
                             }
                         });
@@ -357,6 +361,7 @@ public class Bluetooth2 {
 
 
                     try{
+
                         socket =(BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(device,1);
                         socket.connect();
 

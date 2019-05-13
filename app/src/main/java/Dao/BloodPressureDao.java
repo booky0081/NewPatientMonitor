@@ -34,4 +34,19 @@ public interface BloodPressureDao {
     List<String> test();
 
 
+    @Query("select Patient.first_name from BloodPressure JOIN DeviceModel ON BloodPressure.meta_id  = DeviceModel.id  JOIN Patient ON Patient.id = DeviceModel.patient_id group by DeviceModel.patient_id")
+    List<String> getPatientList();
+
+
+    @Query("select date(DeviceModel.created_date) from BloodPressure JOIN DeviceModel ON BloodPressure.meta_id  = DeviceModel.id JOIN Patient ON Patient.first_name =:firstName group by DeviceModel.created_date ")
+    List<String> getTimeList(String firstName);
+
+    /*
+
+    @Query("select * from BloodPressure JOIN DeviceModel ON BloodPressure.meta_id  = DeviceModel.id JOIN Patient ON Patient.first_name =:firstName and DeviceModel.created_date =:time ")
+    List<String> getDataList(String firstName,String time);
+    */
+
+
+
 }

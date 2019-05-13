@@ -1,5 +1,7 @@
 package BluetoothParser;
 
+import android.util.Log;
+
 public class BloodPressurePaser extends BaseParser {
 
 
@@ -38,10 +40,16 @@ public class BloodPressurePaser extends BaseParser {
     @Override
     public boolean Parse(String message) {
 
-
+        systolicPressure++;
+        diastolicPressure++;
+        pulseRate++;
         int tmp = 0;
 
+        Log.d("BloodPressureParer", message);
+
         for (char x : message.toCharArray()) {
+
+
 
             if (x == '\2') {
                 state = BEGIN;
@@ -68,8 +76,11 @@ public class BloodPressurePaser extends BaseParser {
                 tmp = x;
                 state = DIA_H;
             } else if (state == DIA_H) {
+
                 diastolicPressure = (tmp << 8) + x;
+
                 tmp = 0;
+
                 state = DIA_L;
                 return true;
             } else if (state == DIA_L) {
@@ -85,7 +96,7 @@ public class BloodPressurePaser extends BaseParser {
                 return true;
             } else if (state == PUL_L && x == '\3') {
                 state = END;
-                ended = true;
+            //    ended = true;
             } else if (x == '\r' && state == END) {
                 state = UNKNOWN;
             }

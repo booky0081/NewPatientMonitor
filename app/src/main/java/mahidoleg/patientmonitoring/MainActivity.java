@@ -15,12 +15,14 @@ import java.util.List;
 import API.Base.APIClientInterface;
 import API.Patient.PatientAPIClient;
 import BluetoothHandler.BloodPressureHandler;
+import BluetoothHandler.FluidHandler;
 import DataHandler.BloodPressureDataHandler;
 import DataHandler.SyncDataHandler;
 import DataModel.PatientModel;
 import Database.DataBaseHandler;
 import Dialog.BloodPressureBluetoothDialog;
 import Dialog.BluetoothDialog;
+import History.History;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,17 +54,21 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
     private BluetoothDialog bloodPressureBluetooth;
 
+    private BluetoothDialog fluidBluetooth;
+
     private BloodPressureDataHandler bloodPressureDataHandler;
 
     private ViewPagerAdapter viewPagerAdapter;
 
     private Unbinder unbinder;
 
-    private String[] menuButton = {"LOGIN", "SYNC", "MORE"};
+    private String[] menuButton = {"LOGIN", "SYNC", "HISTORY"};
 
     private static final int LOGININTENT = 1;
 
     private static boolean loggedIn = false;
+
+    private FluidHandler fluidHandler;
 
     private Activity activity;
 
@@ -100,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         bloodPressureBluetooth = new BloodPressureBluetoothDialog(activity);
 
         bloodPressureBluetooth.setDialogDataInterface(bloodPressureDataHandler);
+
+        fluidBluetooth = new BluetoothDialog(activity);
+
 
     }
 
@@ -146,7 +155,9 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
                 if (loggedIn) {
 
                     loggedIn = false;
+
                     HamButton.Builder builder = (HamButton.Builder) bmb.getBuilder(0);
+
                     builder.normalText("LOGIN");
                 }
             }
@@ -158,8 +169,6 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
             SyncDataHandler syncDataHandler = new SyncDataHandler();
 
             syncDataHandler.setContinueOnFilaure(false);
-
-
 
             syncDataHandler.setSyncInterface(new SyncDataHandler.SyncInterface() {
 
@@ -213,8 +222,13 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
             alertDialog.setTitle("Syncing Data");
 
             alertDialog.setMessage("Please Wait");
+
             alertDialog.show();
+
             syncDataHandler.Sync();
+        }else{
+
+            History();
         }
     }
 
@@ -224,7 +238,10 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         startActivityForResult(loginIntent, LOGININTENT);
     }
 
-
+    private void History(){
+        Intent historyIntent = new Intent(this, History.class);
+        startActivity(historyIntent);
+    }
     class ViewPagerAdapter extends FragmentPagerAdapter {
 
         public ViewPagerAdapter(@NonNull FragmentManager fm) {
@@ -252,6 +269,14 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
                     return bloodPressureHandler;
 
+                case 1:
+
+                    fluidHandler = FluidHandler.newInstance(2,"Fluid");
+
+                    fluidHandler.setBluetoothDialog(fluidBluetooth);
+
+                    return fluidHandler;
+
             }
 
             return null;
@@ -259,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
         @Override
         public int getCount() {
-            return 1;
+            return 2;
         }
 
         @Override
@@ -267,9 +292,9 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
             switch (position) {
                 case 0:
                     return "Blood Pressure";
-                case 1:
-                    return "EKG";
                 case 2:
+                    return "EKG";
+                case 1:
                     return "Water Pressure";
             }
 

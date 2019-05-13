@@ -3,12 +3,14 @@ package DataModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import Helper.TimestampConverter;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 @Entity(tableName = "BloodPressure")
-
+@TypeConverters({TimestampConverter.class,})
 public class BloodPressureModel {
 
     @PrimaryKey(autoGenerate = true)

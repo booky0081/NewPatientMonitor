@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@drawable/bluetooth_list_border"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <com.google.android.flexbox.FlexboxLayout
+
+            android:layout_width="match_parent"
+            android:padding="16dp"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap"
+            app:justifyContent="space_between"
+            app:alignContent="stretch"
+            android:scrollbars="vertical"
+            app:flexDirection="column"
+            app:alignItems="stretch"
+            app:showDivider="beginning|middle"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fluid"
+                android:textStyle="bold"
+                android:layout_margin="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Variables"
+                android:textStyle="bold"/>
+            <com.google.android.flexbox.FlexboxLayout
+                android:id ="@+id/fluid_1_detail_layout"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:background="@drawable/layout_sky_blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexDirection="row"
+                app:flexWrap="wrap"
+                app:alignContent="stretch"
+                app:justifyContent="space_between"
+                app:alignItems="stretch"
+                android:layout_margin="8dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minEms="5"
+                        android:text="fluid_1 : "
+                        android:textSize="12sp"
+
+                        />
+
+                    <TextView
+                        android:id="@+id/fluid_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minEms="5"
+                        android:text="10000"
+                        android:textSize="12sp"
+
+
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minEms="5"
+                        android:text="fluid_2: "
+                        android:textSize="12sp"
+
+                        />
+
+                    <TextView
+                        android:id="@+id/fluid_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minEms="5"
+                        android:text="10000"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minEms="5"
+                        android:text="fluid_3 : "
+                        android:textSize="12sp"
+
+                        />
+
+                    <TextView
+                        android:id="@+id/fluid_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minEms="5"
+                        android:text="10000"
+                        android:textSize="12sp"
+
+
+                        />
+
+                </LinearLayout>
+
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <include layout="@layout/patient_info_layout"/>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </ScrollView>
+
+</LinearLayout>

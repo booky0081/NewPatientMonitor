@@ -1,5 +1,7 @@
 package DataHandler;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -42,7 +44,11 @@ public class BloodPressureDataHandler implements DialogInterface {
 
     public synchronized  BloodPressureModel getLastest(){
 
-        return bloodPressureModelArrayList.get(bloodPressureModelArrayList.size()-1);
+        if(bloodPressureModelArrayList.size()>0) {
+            return bloodPressureModelArrayList.get(bloodPressureModelArrayList.size() - 1);
+        }
+
+        return null;
     }
 
     public void Reset(){
@@ -53,6 +59,7 @@ public class BloodPressureDataHandler implements DialogInterface {
     @Override
     public void onMessage(String message) {
 
+        Log.d("BlooedDataHandler","REV");
         bloodPressurePaser.Parse(message);
 
         BloodPressureModel bloodPressureModel = new BloodPressureModel();
@@ -65,9 +72,9 @@ public class BloodPressureDataHandler implements DialogInterface {
 
         bloodPressureModel.setDiastolic(bloodPressurePaser.getSystolicPressure());
 
-        if(bloodPressurePaser.isEnded()) {
+        bloodPressureModelArrayList.add(bloodPressureModel);
 
-            bloodPressureModelArrayList.add(bloodPressureModel);
+        if(bloodPressurePaser.isEnded()) {
 
             insertData();
         }

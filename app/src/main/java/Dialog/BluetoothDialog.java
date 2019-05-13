@@ -4,12 +4,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import Bluetooth.Bluetooth2;
@@ -102,11 +102,14 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
             Enable(false);
 
+
+
             if(bluetooth.isConnected() ){
 
 
                 bluetooth.disconnect();
             }
+
 
 
             if(bluetooth.getPairedDevices().contains(device)){
@@ -115,12 +118,13 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
                 setText("Connecting to " + device.getAddress());
 
-                bluetooth.connectToDevice(device);
+              //  bluetooth.connectToDevice(device);
+
+                bluetooth.connectToDevice(device,true);
 
 
 
             }else{
-
 
 
                 bluetooth.pair(device);
@@ -129,15 +133,17 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
             }
         });
+
         refreshButton = view.findViewById(R.id.refresh_button);
 
         refreshButton.setOnClickListener(v -> Refresh());
 
-        bluetooth = new Bluetooth2(activity, UUID.fromString("4c16edd8-4f0b-11e9-8647-d663bd873d93"));
-
-        bluetooth.setDeviceCallback(this);
+        bluetooth = new Bluetooth2(activity);
 
         bluetooth.setDiscoveryCallback(this);
+
+
+        bluetooth.setDeviceCallback(this);
 
         bluetooth.setCallbackOnUI(activity);
 
@@ -217,9 +223,12 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
     public void Show(){
 
-        dialog.show();
+        if(!dialog.isShowing()) {
+            dialog.show();
+            Refresh();
+        }
 
-        Refresh();
+
     }
 
     public void dismiss(){
@@ -239,8 +248,6 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
         bluetooth.enable();
 
-
-
     }
 
     public void Disconnect(){
@@ -249,10 +256,12 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
             bluetooth.disconnect();
         }
     }
+
     public void Stop(){
 
         bluetooth.onStop();
 
+        Log.d("BluetoothDialog","STOPPING");
         unbinder.unbind();
 
     }
@@ -264,13 +273,17 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
         AddConnectedDevice(device);
 
         toBeConnected = device;
-      //  setText("Connected to " + device.getAddress());
 
         if(dialogInterface!=null) {
 
             setText("Connected to " + device.getAddress());
             dialogInterface.onConnected(device.getAddress());
 
+        }
+
+        if(dialogDataInterface!=null){
+
+            dialogInterface.onMessage(device.getAddress());
         }
 
         if(dialog.isShowing()){
@@ -301,20 +314,22 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
             Enable(true);
         }
 
-        //setText("Disconnected from " + device.getName());
     }
 
     @Override
     public void onMessage(String message) {
 
-        if(dialogInterface!=null) {
-            dialogInterface.onMessage(message);
-        }
-
         if(dialogDataInterface!=null){
 
             dialogDataInterface.onMessage(message);
+
+            if(dialogInterface!=null) {
+
+                dialogInterface.onMessage(message);
+
+            }
         }
+
     }
 
     @Override
@@ -376,7 +391,9 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
 
             Enable(true);
-            setText(message);
+         //   setText(message);
+
+            Log.e("BluetoothDialog", "ERROR");
 
             if(dialogInterface!=null) {
 
@@ -386,16 +403,15 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
             if(dialogDataInterface!=null){
 
-                dialogInterface.onMessage(message);
+                dialogDataInterface.onError(message);
             }
     }
 
     @Override
     public void onConnectError(BluetoothDevice device, String message) {
-
         Enable(true);
 
-        setText( "on conncted"  + message);
+        setText( "on conncted "   + message);
     }
 
 

@@ -14,7 +14,6 @@ import DataModel.PatientModel;
 import Database.DataBaseHandler;
 import Dialog.BluetoothDialog;
 import Dialog.DialogInterface;
-import Dialog.HistoryDialog;
 import Dialog.ProfileManagement;
 import Dialog.ProfileManagementInterface;
 import androidx.fragment.app.Fragment;
@@ -41,8 +40,10 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
     @BindView(R.id.blood_pressure_connect_button)
     MaterialButton bluetoothConnectButton;
 
+    /*
     @BindView(R.id.blood_pressure_history_button)
     MaterialButton historyButton;
+    */
 
     private ProfileManagement profileManagement;
 
@@ -54,7 +55,7 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
 
     protected long currentDeviceMeta = -1;
 
-    protected HistoryDialog historyDialog;
+   // protected HistoryDialog historyDialog;
 
     private boolean isRunning = false;
 
@@ -73,7 +74,7 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
             setBluetoothConnectButton();
         }
 
-
+        /*
         if(historyDialog == null){
 
             historyDialog = new HistoryDialog(activity);
@@ -84,9 +85,10 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
                 historyDialog.show();
             });
         }
+        */
     }
 
-    protected abstract void reloadHistory();
+   // protected abstract void reloadHistory();
 
     @Override
     public void onStart() {
@@ -182,6 +184,7 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
     protected abstract void Start();
 
     protected abstract void Stop();
+
     @Override
     public void onConnected(String deviceName) {
 
@@ -206,8 +209,6 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
         deviceModel.setDeviceName(bluetoothDialog.getDeviceName());
 
         currentDeviceMeta = DataBaseHandler.getInstance().getDB().deviceDao().insertMetadata(deviceModel);
-
-        bluetoothDialog.dismiss();
 
         Start();
     }
@@ -255,10 +256,13 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
     }
 
 
+
+
     public void setBluetoothDialog(BluetoothDialog bluetoothDialog){
 
         this.bluetoothDialog = bluetoothDialog;
 
         bluetoothDialog.setDialogInterface(this);
     }
+
 }
