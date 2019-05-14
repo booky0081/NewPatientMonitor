@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 
 import BluetoothParser.BloodPressurePaser;
-import DataModel.BloodPressureModel;
 
 public class BloodPressureBluetoothDialog extends BluetoothDialog {
 
@@ -13,8 +12,8 @@ public class BloodPressureBluetoothDialog extends BluetoothDialog {
     public BloodPressureBluetoothDialog(Activity activity) {
 
         super(activity);
-
-        bloodPressurePaser = new BloodPressurePaser();
+//
+      //  bloodPressurePaser = new BloodPressurePaser();
     }
 
     public void onDeviceConnected(BluetoothDevice device){
@@ -26,34 +25,6 @@ public class BloodPressureBluetoothDialog extends BluetoothDialog {
             dialogDataInterface.onConnected(device.getName());
         }
     }
-    @Override
-    public void onMessage(String message){
 
-        if(bloodPressurePaser.Parse(message)) {
-
-            BloodPressureModel bloodPressureModel = new BloodPressureModel();
-
-            bloodPressureModel.setDiastolic(bloodPressurePaser.getDiastolicPressure());
-
-            bloodPressureModel.setPulse(bloodPressurePaser.getPulseRate());
-
-            if(this.dialogDataInterface!=null){
-
-                dialogDataInterface.onObject(bloodPressureModel);
-            }
-
-            if(this.dialogInterface!=null){
-
-                dialogInterface.onObject(bloodPressureModel);
-            }
-
-        }
-
-    }
-
-
-    public BloodPressurePaser getBloodPressurePaser() {
-
-        return bloodPressurePaser;
-    }
 }
+

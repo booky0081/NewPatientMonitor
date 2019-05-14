@@ -9,6 +9,7 @@ public class BloodPressurePaser extends BaseParser {
     private long diastolicPressure = 0;
     private long pulseRate = 0;
     private int state;
+    private long cuffPressure = 0;
 
     private int UNKNOWN = -1;
     private int BEGIN = 0;
@@ -40,16 +41,12 @@ public class BloodPressurePaser extends BaseParser {
     @Override
     public boolean Parse(String message) {
 
-        systolicPressure++;
-        diastolicPressure++;
-        pulseRate++;
         int tmp = 0;
 
-        Log.d("BloodPressureParer", message);
+        boolean isData = false;
+
 
         for (char x : message.toCharArray()) {
-
-
 
             if (x == '\2') {
                 state = BEGIN;
@@ -57,11 +54,11 @@ public class BloodPressurePaser extends BaseParser {
                 tmp = x;
                 state = CUFF_H;
             } else if (state == CUFF_H) {
-
+                cuffPressure = (tmp << 8) + x;
                 tmp = 0;
                 state = CUFF_L;
 
-                return true;
+                isData= true;
             } else if (state == CUFF_L) {
                 tmp = x;
                 state = SYS_H;
@@ -71,7 +68,7 @@ public class BloodPressurePaser extends BaseParser {
 
                 state = SYS_L;
 
-                return true;
+                isData= true;
             } else if (state == SYS_L) {
                 tmp = x;
                 state = DIA_H;
@@ -82,11 +79,12 @@ public class BloodPressurePaser extends BaseParser {
                 tmp = 0;
 
                 state = DIA_L;
-                return true;
+                isData= true;
             } else if (state == DIA_L) {
                 tmp = x;
                 state = PUL_H;
             } else if (state == PUL_H) {
+
                 pulseRate = (tmp << 8) + x;
 
                 tmp = 0;
@@ -103,7 +101,13 @@ public class BloodPressurePaser extends BaseParser {
         }
 
 
-        return false;
+        Log.d("BloodPressureParer", cuffPressure+"");
+        return isData;
+    }
+
+    public long getCuffPressure(){
+
+        return cuffPressure;
     }
 
     public boolean isEnded(){

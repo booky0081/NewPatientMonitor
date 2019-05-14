@@ -30,6 +30,9 @@ public class BloodPressureHandler extends BaseHandler {
     @BindView(R.id.pulse)
 
     TextView pulseField;
+
+    @BindView(R.id.cuff_pressure)
+    TextView cuffPressureField;
     /*
     @BindView(R.id.chart)
     LineChart chart;
@@ -103,7 +106,7 @@ public class BloodPressureHandler extends BaseHandler {
 
         SetUp(getActivity());
     /*
-        bloodPressureHistoryAdapter = new BloodPressureHistoryAdapter(getActivity(),R.layout.blood_pressure_history_layout);
+        bloodPressureHistoryAdapter = new BloodPressureHistoryAdapter(getActivity(),R.layout.blood_pressure_0144_layout);
 
         this.historyDialog.setAdapter(bloodPressureHistoryAdapter);
 
@@ -118,6 +121,8 @@ public class BloodPressureHandler extends BaseHandler {
     protected void Parse(String message) {
 
         BloodPressureModel bloodPressureModel = BloodPressureDataHandler.getInstance().getLastest();
+       // Log.d("Blood Pressure handler",BloodPressureDataHandler.getInstance().getCuffPressure()+"");
+        cuffPressureField.setText(Long.toString(BloodPressureDataHandler.getInstance().getCuffPressure()));
         if(bloodPressureModel!=null){
 
             setBP(bloodPressureModel);

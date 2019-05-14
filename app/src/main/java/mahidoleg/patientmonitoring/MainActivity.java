@@ -17,6 +17,7 @@ import API.Patient.PatientAPIClient;
 import BluetoothHandler.BloodPressureHandler;
 import BluetoothHandler.FluidHandler;
 import DataHandler.BloodPressureDataHandler;
+import DataHandler.FluidDataHandler;
 import DataHandler.SyncDataHandler;
 import DataModel.PatientModel;
 import Database.DataBaseHandler;
@@ -60,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
     private ViewPagerAdapter viewPagerAdapter;
 
+    private FluidHandler fluidHandler;
+
     private Unbinder unbinder;
 
     private String[] menuButton = {"LOGIN", "SYNC", "HISTORY"};
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
     private static boolean loggedIn = false;
 
-    private FluidHandler fluidHandler;
+    private FluidDataHandler fluidDataHandler;
 
     private Activity activity;
 
@@ -108,6 +111,10 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
         bloodPressureBluetooth.setDialogDataInterface(bloodPressureDataHandler);
 
         fluidBluetooth = new BluetoothDialog(activity);
+
+        fluidDataHandler =  FluidDataHandler.getInstance();
+
+        fluidBluetooth.setDialogDataInterface(fluidDataHandler);
 
 
     }
@@ -275,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
                     fluidHandler.setBluetoothDialog(fluidBluetooth);
 
+
                     return fluidHandler;
 
             }
@@ -322,6 +330,8 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
         bloodPressureBluetooth.Start();
 
+        fluidBluetooth.Start();
+
         Test();
 
 
@@ -334,6 +344,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
 
         bloodPressureBluetooth.Stop();
 
+        fluidBluetooth.Stop();
     }
 
     private void Test(){

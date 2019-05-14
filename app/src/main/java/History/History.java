@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import Database.DataBaseHandler;
@@ -59,38 +60,44 @@ public class History extends Activity {
         });
     }
 
+
     @Override
     public void onBackPressed() {
 
-        step--;
+
+        Log.d("History","step : "+ step);
 
         switch(step){
 
-            case 0 :
+            case 1 :
 
                 list.clear();
                 for (int i = 0; i < values.length; ++i) {
                     list.add(values[i]);
 
                 }
+                step--;
                 adapter.notifyDataSetChanged();
 
                 break;
-            case 1:
+            case 2:
 
                 stepHandler(null,0);
+                step=step-2;
 
                 break;
 
             default: super.onBackPressed(); break;
-
 
         }
 
 
 
 
+
+
     }
+
 
 
     private void stepHandler(String item,int position){
@@ -129,13 +136,19 @@ public class History extends Activity {
                 switch(mode){
 
                     case 0:
-                        List<String> tempList2 = DataBaseHandler.getInstance().getDB().bloodPressureDao().getTimeList(item);
+                        List<Date> tempList2 = DataBaseHandler.getInstance().getDB().bloodPressureDao().getTimeList(item);
 
                         list.clear();
 
-                        list.addAll(tempList2);
+                        for(int i = 0 ;i<tempList2.size();i++){
+
+                            list.add(tempList2.get(i).toString());
+
+                            Log.d("History",list.get(i).toString());
+                        }
 
                         adapter.notifyDataSetChanged();
+
                         break;
 
                     default : break;

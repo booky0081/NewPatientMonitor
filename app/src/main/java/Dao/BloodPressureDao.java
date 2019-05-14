@@ -1,5 +1,6 @@
 package Dao;
 
+import java.util.Date;
 import java.util.List;
 
 import DataModel.BloodPressureHistoryModel;
@@ -38,8 +39,8 @@ public interface BloodPressureDao {
     List<String> getPatientList();
 
 
-    @Query("select date(DeviceModel.created_date) from BloodPressure JOIN DeviceModel ON BloodPressure.meta_id  = DeviceModel.id JOIN Patient ON Patient.first_name =:firstName group by DeviceModel.created_date ")
-    List<String> getTimeList(String firstName);
+    @Query("select DeviceModel.created_date from BloodPressure JOIN DeviceModel ON BloodPressure.meta_id  = DeviceModel.id JOIN Patient ON Patient.first_name =:firstName group by  date(datetime(DeviceModel.created_date / 1000 , 'unixepoch')) ")
+    List<Date> getTimeList(String firstName);
 
     /*
 

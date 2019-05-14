@@ -56,6 +56,7 @@ public class BloodPressureDataHandler implements DialogInterface {
         bloodPressureModelArrayList = new ArrayList<>();
 
     }
+
     @Override
     public void onMessage(String message) {
 
@@ -70,14 +71,15 @@ public class BloodPressureDataHandler implements DialogInterface {
 
         bloodPressureModel.setDiastolic(bloodPressurePaser.getDiastolicPressure());
 
-        bloodPressureModel.setDiastolic(bloodPressurePaser.getSystolicPressure());
+        bloodPressureModel.setSystolic(bloodPressurePaser.getSystolicPressure());
 
         bloodPressureModelArrayList.add(bloodPressureModel);
-
+        /*
         if(bloodPressurePaser.isEnded()) {
 
             insertData();
         }
+        */
 
     }
 
@@ -143,5 +145,10 @@ public class BloodPressureDataHandler implements DialogInterface {
 
         return bloodPressureModelArrayList;
 
+    }
+
+    public long getCuffPressure(){
+
+        return bloodPressurePaser.getCuffPressure();
     }
 }
