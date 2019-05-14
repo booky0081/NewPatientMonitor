@@ -33,7 +33,7 @@ public class FluidDataHandler implements DialogInterface {
 
     @Override
     public void onMessage(String message) {
-
+        fluidPaser.Parse(message);
     }
 
     @Override
