@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bluetooth_list_border"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <com.google.android.flexbox.FlexboxLayout
+
+            android:layout_width="match_parent"
+            android:padding="16dp"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap"
+            app:justifyContent="space_between"
+            app:alignContent="stretch"
+            android:scrollbars="vertical"
+            app:flexDirection="column"
+            app:alignItems="stretch"
+            app:showDivider="beginning|middle"
+            >
+            <com.jjoe64.graphview.GraphView
+                android:layout_width="match_parent"
+                android:layout_height="200dip"
+                android:id="@+id/ecg_graph" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fluid"
+                android:textStyle="bold"
+                android:layout_margin="8dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Commands"
+                android:textStyle="bold"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/start_ecg_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:ems="8"
+                android:textStyle="bold"
+                android:text="Record"/>
+
+
+            <include layout="@layout/patient_info_layout"/>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </ScrollView>
+
+</LinearLayout>

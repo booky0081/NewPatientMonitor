@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:flexDirection="row"
+        app:justifyContent="center"
+        app:flexWrap="wrap"
+        app:alignContent="stretch"
+        app:alignItems="flex_start"
+        android:layout_margin="8dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="urination : "
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+                />
+
+            <TextView
+                android:id="@+id/water_list_urination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10000"
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="panWt: "
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+                />
+
+            <TextView
+                android:id="@+id/water_list_panWt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+                android:text="10000"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FCWater : "
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+                />
+
+            <TextView
+                android:id="@+id/water_list_FCWater"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="10000"
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drink : "
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+                />
+
+            <TextView
+                android:id="@+id/water_list_drink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:text="10000"
+                android:textSize="14sp"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="beforeAdd : "
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+                />
+
+            <TextView
+                android:id="@+id/water_list_beforeAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:text="10000"
+                android:textSize="14sp"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BottleWt : "
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+                />
+
+            <TextView
+                android:id="@+id/water_list_bottleWt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:text="10000"
+                android:textSize="14sp"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UrineBag : "
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textSize="14sp"
+
+                />
+
+            <TextView
+                android:id="@+id/water_list_urineBag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:text="10000"
+                android:textSize="14sp"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BeforeEmptyWt : "
+                android:textSize="14sp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+
+                />
+
+            <TextView
+                android:id="@+id/water_list_beforeEmptyWt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:text="10000"
+                android:textSize="14sp"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start: "
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textSize="14sp"
+
+            />
+        <TextView
+
+            android:id="@+id/water_list_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10000"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textSize="14sp"
+
+            />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" End: "
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textSize="14sp"
+
+            />
+        <TextView
+
+            android:id="@+id/water_list_end_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10000"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textSize="14sp"
+
+            />
+        </LinearLayout>
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/water_checkeds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_margin="8dp"/>
+    </com.google.android.flexbox.FlexboxLayout>
+</LinearLayout>

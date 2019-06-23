@@ -3,10 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="16dp"
     android:background="@drawable/bluetooth_list_border"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
+    android:focusableInTouchMode="false">
 
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/waterList"
+        android:layout_width="match_parent"
+        android:layout_margin="16dp"
+        android:layout_height="200dp"
+        android:background="@drawable/bluetooth_list_border"
+        />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,7 +34,9 @@
             app:flexDirection="column"
             app:alignItems="stretch"
             app:showDivider="beginning|middle"
+            android:nestedScrollingEnabled="true"
             >
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -33,10 +45,12 @@
                 android:textStyle="bold"
                 android:layout_margin="8dp"/>
 
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Variables"
+                android:text="Commands"
                 android:textStyle="bold"/>
             <com.google.android.flexbox.FlexboxLayout
                 android:id ="@+id/fluid_1_detail_layout"
@@ -52,85 +66,70 @@
                 app:alignItems="stretch"
                 android:layout_margin="8dp"
                 >
-
-                <LinearLayout
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addNew"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
+                    android:textSize="14sp"
 
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minEms="5"
-                        android:text="fluid_1 : "
-                        android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_alignSelf="flex_start"
+                    android:text="Add New"/>
 
-                        />
-
-                    <TextView
-                        android:id="@+id/fluid_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minEms="5"
-                        android:text="10000"
-                        android:textSize="12sp"
-
-
-                        />
-
-                </LinearLayout>
-
-                <LinearLayout
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/setPan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
+                    android:textSize="14sp"
 
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minEms="5"
-                        android:text="fluid_2: "
-                        android:textSize="12sp"
-
-                        />
-
-                    <TextView
-                        android:id="@+id/fluid_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minEms="5"
-                        android:text="10000"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <LinearLayout
+                    android:textStyle="bold"
+                    app:layout_alignSelf="flex_start"
+                    android:text="SetPan"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/setBottle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:textSize="14sp"
 
-                    <TextView
+                    android:textStyle="bold"
+                    app:layout_alignSelf="flex_start"
+                    android:text="SetBottle"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/beforeAdd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
 
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minEms="5"
-                        android:text="fluid_3 : "
-                        android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_alignSelf="flex_start"
+                    android:text="BeforeAdd"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/adjustTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
 
-                        />
+                    android:textStyle="bold"
+                    app:layout_alignSelf="flex_start"
+                    android:text="AdjustTime"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/drink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
 
-                    <TextView
-                        android:id="@+id/fluid_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minEms="5"
-                        android:text="10000"
-                        android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_alignSelf="flex_start"
+                    android:text="Drink"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/urineBag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
 
-
-                        />
-
-                </LinearLayout>
-
+                    android:textStyle="bold"
+                    app:layout_alignSelf="flex_start"
+                    android:text="UrineBag"/>
 
             </com.google.android.flexbox.FlexboxLayout>
 

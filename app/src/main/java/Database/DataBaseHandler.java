@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.room.Room;
 
 public class DataBaseHandler {
+
     private static  DataBaseHandler ourInstance = null;
 
     private static Database db;

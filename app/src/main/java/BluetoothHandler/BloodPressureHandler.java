@@ -1,6 +1,7 @@
 package BluetoothHandler;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,19 +34,7 @@ public class BloodPressureHandler extends BaseHandler {
 
     @BindView(R.id.cuff_pressure)
     TextView cuffPressureField;
-    /*
-    @BindView(R.id.chart)
-    LineChart chart;
 
-
-    private LineDataSet pulseDataSet;
-
-    private LineDataSet systolicDataSet;
-
-    private LineDataSet diastolicDataSet;
-    */
-
-  //  private BloodPressureHistoryAdapter bloodPressureHistoryAdapter;
 
     private Unbinder unbinder;
 
@@ -67,25 +56,9 @@ public class BloodPressureHandler extends BaseHandler {
         View view = inflater.inflate(R.layout.blood_pressure_layout,container,false);
 
         unbinder = ButterKnife.bind(this,view);
-        /*
-        XAxis xAxis = chart.getXAxis();
 
-        xAxis.setValueFormatter((value, axis) -> {
+        Log.d("BloodPressure","Create");
 
-            int myValue = Math.round(value);
-
-
-            int hours = myValue / 3600;
-
-            int minutes = ( myValue%3600)/60;
-
-            int seconds = (myValue%3600)%60;
-
-            return hours+":"+minutes+":"+seconds;
-
-        });
-
-        */
         return view;
 
     }
@@ -93,10 +66,28 @@ public class BloodPressureHandler extends BaseHandler {
     @Override
     public void onDestroyView() {
 
+        Log.d("BloodPressure","Destroy");
         super.onDestroyView();
 
-
         unbinder.unbind();
+    }
+
+    @Override
+    public void onResume() {
+
+        Log.d("BloodPressure","Resume");
+
+        super.onResume();
+
+        SetUp(getActivity());
+    }
+
+    @Override
+    public void onStart() {
+
+        Log.d("BloodPressure","Start");
+        super.onStart();
+
     }
 
     @Override
@@ -104,15 +95,8 @@ public class BloodPressureHandler extends BaseHandler {
 
         super.onActivityCreated(savedInstanceState);
 
-        SetUp(getActivity());
-    /*
-        bloodPressureHistoryAdapter = new BloodPressureHistoryAdapter(getActivity(),R.layout.blood_pressure_0144_layout);
 
-        this.historyDialog.setAdapter(bloodPressureHistoryAdapter);
 
-        this.ReloadChart();
-
-    */
     }
 
 

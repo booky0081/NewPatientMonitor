@@ -51,6 +51,12 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
     private boolean closeable = true;
 
+    public void setUTF8(){
+
+        bluetooth.setEncoding();
+    }
+
+
 
     protected Dialog.DialogInterface dialogInterface;
 
@@ -99,6 +105,7 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
             }
 
             BluetoothDevice device = bluetoothDevices.get(position);
+
 
             Enable(false);
 
@@ -283,13 +290,17 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
         if(dialogDataInterface!=null){
 
-            dialogInterface.onMessage(device.getAddress());
+            dialogDataInterface.onConnected(device.getAddress());
         }
 
         if(dialog.isShowing()){
 
             Enable(true);
+
+            dialog.dismiss();
         }
+
+
 
 
     }
@@ -335,7 +346,7 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
     @Override
     public void onDiscoveryStarted() {
 
-        Enable(false);
+       // Enable(false);
 
     }
 
@@ -350,12 +361,7 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
     @Override
     public void onDeviceFound(BluetoothDevice device) {
 
-
-
-
-            AddDevices(device);
-
-
+        AddDevices(device);
 
        setText("Found :" + device.getAddress() + "BondState "+ device.getBondState()
 
@@ -375,9 +381,7 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
     @Override
     public void onDevicePaired(BluetoothDevice device) {
 
-
            setText("Paried to " + device.getName());
-
     }
 
     @Override
@@ -409,6 +413,7 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
     @Override
     public void onConnectError(BluetoothDevice device, String message) {
+
         Enable(true);
 
         setText( "on conncted "   + message);
@@ -418,6 +423,15 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
     public  String getDeviceName(){
 
         return toBeConnected.getName();
+    }
+
+    public void send(String messege){
+
+        bluetooth.send(messege);
+    }
+
+    public void disconnect(){
+        bluetooth.disconnect();
     }
 
 }

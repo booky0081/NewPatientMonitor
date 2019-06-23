@@ -21,11 +21,11 @@ public class BloodPressureHistoryAdapter extends ArrayAdapter<BloodPressureHisto
     public BloodPressureHistoryAdapter(@NonNull Context context, int resource) {
         super(context, resource);
 
-
     }
 
     @Override
     public int getCount(){
+
         if(bloodPressureHistoryModelList == null){
             return 0;
         }
@@ -43,9 +43,9 @@ public class BloodPressureHistoryAdapter extends ArrayAdapter<BloodPressureHisto
         return position;
     }
 
-    public void SetData(){
+    public void SetData(String patientName,String selectedDate){
 
-        this.bloodPressureHistoryModelList = DataBaseHandler.getInstance().getDB().bloodPressureDao().getHistory();
+        this.bloodPressureHistoryModelList = DataBaseHandler.getInstance().getDB().bloodPressureDao().getHistory(patientName,selectedDate);
 
         this.notifyDataSetChanged();
     }

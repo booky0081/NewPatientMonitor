@@ -7,7 +7,6 @@ import java.util.Date;
 
 import BluetoothParser.BloodPressurePaser;
 import DataModel.BloodPressureModel;
-
 import Database.DataBaseHandler;
 import Dialog.DialogInterface;
 

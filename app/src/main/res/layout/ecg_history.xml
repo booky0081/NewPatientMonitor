@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:flexDirection="row"
+        app:justifyContent="flex_start"
+        app:flexWrap="wrap"
+        app:alignContent="flex_start"
+        app:alignItems="flex_start"
+        android:layout_margin="8dp">
+        <!--
+        <com.jjoe64.graphview.GraphView
+
+            android:id="@+id/ecg_history_graph"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_marginBottom="8dp"/>-->
+
+        <TextView
+
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+
+            android:text="Start: "
+
+            android:textSize="14sp" />
+
+        <TextView
+
+            android:id="@+id/ecg_history_date"
+
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+
+            android:text="10000"
+
+            android:textSize="14sp" />
+        <TextView
+
+
+
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+
+            android:text=" End: "
+
+            android:textSize="14sp" />
+
+        <TextView
+
+            android:id="@+id/ecg_history_end_date"
+
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+
+            android:text="10000"
+
+            android:textSize="14sp" />
+
+
+
+    </com.google.android.flexbox.FlexboxLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/ecg_history_download"
+        android:layout_width="wrap_content"
+        android:text="Upload"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

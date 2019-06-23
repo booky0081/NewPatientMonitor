@@ -49,7 +49,9 @@ public class BloodPressurePaser extends BaseParser {
         for (char x : message.toCharArray()) {
 
             if (x == '\2') {
+
                 state = BEGIN;
+
             } else if (state == BEGIN) {
                 tmp = x;
                 state = CUFF_H;
@@ -93,8 +95,11 @@ public class BloodPressurePaser extends BaseParser {
 
                 return true;
             } else if (state == PUL_L && x == '\3') {
+
                 state = END;
-            //    ended = true;
+
+                ended = true;
+
             } else if (x == '\r' && state == END) {
                 state = UNKNOWN;
             }

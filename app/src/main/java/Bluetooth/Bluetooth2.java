@@ -48,13 +48,16 @@ public class Bluetooth2 {
     private boolean connected;
 
     private boolean runOnUi;
-
+    private boolean  UTF8 = false;
     public Bluetooth2(Context context){
 
         initialize(context, UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
 
     }
 
+    public void setEncoding(){
+        UTF8  = true;
+    }
     public Bluetooth2(Context context, UUID uuid){
         initialize(context, uuid);
     }
@@ -295,8 +298,7 @@ public class Bluetooth2 {
                             @Override
                             public void run() {
 
-                               // Log.d("Bluetooth2","RecievedData" + deviceCallback.getClass());
-                              //  deviceCallback.onMessage(msgCopy);
+
                                 deviceCallback.onMessage(msgCopy);
                             }
                         });
@@ -343,7 +345,15 @@ public class Bluetooth2 {
 
                 out = socket.getOutputStream();
 
-                input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                if(UTF8){
+
+                 input = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
+
+                }else{
+
+                    input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                }
+
 
                 connected=true;
 
@@ -367,7 +377,16 @@ public class Bluetooth2 {
 
                         out = socket.getOutputStream();
 
-                        input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                        if(UTF8){
+
+                            input = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
+
+                        }else{
+
+                            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                        }
+
 
                         connected=true;
 

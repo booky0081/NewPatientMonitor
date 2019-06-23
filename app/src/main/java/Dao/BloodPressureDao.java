@@ -1,6 +1,5 @@
 package Dao;
 
-import java.util.Date;
 import java.util.List;
 
 import DataModel.BloodPressureHistoryModel;
@@ -21,11 +20,12 @@ public interface BloodPressureDao {
     List<BloodPressureModel> getBloodPressureData();
 
     @Query("SELECT BloodPressure.diastolic ,BloodPressure.systolic,BloodPressure.pulse" +
-            ",DeviceModel.created_date, DeviceModel.stop_date,DeviceModel.device_name, " +
-            "Patient.first_name, Hospital.hospital_name FROM  BloodPressure JOIN DeviceModel ON DeviceModel.id = BloodPressure.meta_id " +
-            " JOIN Patient ON Patient.id = DeviceModel.patient_id JOIN Hospital on Hospital.id = Patient.hospital_id order by DeviceModel.created_date ,DeviceModel.stop_date")
+            ",  datetime(DeviceModel.created_date / 1000 , 'unixepoch') as  created_date, datetime(DeviceModel.stop_date / 1000 , 'unixepoch') as stop_date,DeviceModel.device_name, " +
+            "Patient.first_name, Hospital.hospital_name FROM  BloodPressure JOIN DeviceModel ON DeviceModel.id = BloodPressure.meta_id  and date(datetime(DeviceModel.created_date / 1000 , 'unixepoch')) = :selectedDate " +
+            " JOIN Patient ON Patient.id = DeviceModel.patient_id  and Patient.first_name = :patientName JOIN Hospital on Hospital.id = Patient.hospital_id"
+            )
 
-    List<BloodPressureHistoryModel> getHistory();
+    List<BloodPressureHistoryModel> getHistory( String patientName, String selectedDate);
 
     @Query("select * from BloodPressure JOIN DeviceModel ON BloodPressure.meta_id  = DeviceModel.id  and date(datetime(DeviceModel.created_date / 1000 , 'unixepoch')) = date('now')")
     List<BloodPressureHistoryModel> getTodayData();
@@ -39,8 +39,8 @@ public interface BloodPressureDao {
     List<String> getPatientList();
 
 
-    @Query("select DeviceModel.created_date from BloodPressure JOIN DeviceModel ON BloodPressure.meta_id  = DeviceModel.id JOIN Patient ON Patient.first_name =:firstName group by  date(datetime(DeviceModel.created_date / 1000 , 'unixepoch')) ")
-    List<Date> getTimeList(String firstName);
+    @Query("select date(datetime(DeviceModel.created_date / 1000 , 'unixepoch'))  as created_date from BloodPressure JOIN DeviceModel ON BloodPressure.meta_id  = DeviceModel.id JOIN Patient ON Patient.first_name =:firstName group by  date(datetime(DeviceModel.created_date / 1000 , 'unixepoch')) ")
+    List<String> getTimeList(String firstName);
 
     /*
 

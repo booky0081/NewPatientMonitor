@@ -12,8 +12,7 @@ public class BloodPressureBluetoothDialog extends BluetoothDialog {
     public BloodPressureBluetoothDialog(Activity activity) {
 
         super(activity);
-//
-      //  bloodPressurePaser = new BloodPressurePaser();
+
     }
 
     public void onDeviceConnected(BluetoothDevice device){

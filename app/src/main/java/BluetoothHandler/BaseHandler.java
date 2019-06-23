@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 
-import java.util.Date;
+import java.sql.Date;
 
 import DataModel.DeviceModel;
 import DataModel.HospitalModel;
@@ -45,13 +45,15 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
     MaterialButton historyButton;
     */
 
-    private ProfileManagement profileManagement;
+    private ProfileManagement profileManagement = null;
+
+    protected  boolean toCreate = true;
 
     private ProfileManagementInterface profileManagementInterface;
 
     protected BluetoothDialog bluetoothDialog;
 
-    private long selectedPatientId = -1;
+    protected long selectedPatientId = -1;
 
     protected long currentDeviceMeta = -1;
 
@@ -63,7 +65,8 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
     protected void SetUp(Activity activity){
 
 
-        if(profileManagement == null){
+       // if(profileManagement == null){
+
 
             profileManagement = new ProfileManagement(activity);
 
@@ -72,23 +75,11 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
             setProfileManageButton();
 
             setBluetoothConnectButton();
-        }
+     //   }
 
-        /*
-        if(historyDialog == null){
-
-            historyDialog = new HistoryDialog(activity);
-
-            historyButton.setOnClickListener(v -> {
-
-                reloadHistory();
-                historyDialog.show();
-            });
-        }
-        */
     }
 
-   // protected abstract void reloadHistory();
+
 
     @Override
     public void onStart() {
@@ -198,21 +189,26 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
 
         this.profileManageButton.setEnabled(false);
 
+        if(toCreate) {
+
+          createDeviceModel();
+        }
+
+        Start();
+    }
+
+    protected void createDeviceModel(){
+
         DeviceModel deviceModel = new DeviceModel();
 
         deviceModel.setPatientId(selectedPatientId);
 
         deviceModel.setCreateDate(new Date(System.currentTimeMillis()));
 
-        deviceModel.setDeviceId(1);
-
         deviceModel.setDeviceName(bluetoothDialog.getDeviceName());
 
         currentDeviceMeta = DataBaseHandler.getInstance().getDB().deviceDao().insertMetadata(deviceModel);
-
-        Start();
     }
-
     @Override
     public void onComplete(long id) {
 
