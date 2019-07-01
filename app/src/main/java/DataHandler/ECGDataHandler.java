@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -59,13 +58,11 @@ public class ECGDataHandler implements DialogInterface {
 
    private long ecgId = 0;
 
+   private int testNumber = 8;
+
+   private int count = 0;
    private Executor executor = Executors.newSingleThreadExecutor();
 
-
-
-    private int xtest = 0;
-
-    private Random r = new Random();
 
     public static synchronized ECGDataHandler getInstance(){
 
@@ -91,110 +88,122 @@ public class ECGDataHandler implements DialogInterface {
     @Override
     public void onMessage(String message) {
 
-    //    Log.d("ECG Data",message);
+       //Log.d("ECG Data",message);
         executor.execute(() -> {
 
-            for (char x : message.toCharArray()) {
-
-                Log.d("ECG int",(x)+"");
-                Log.d("ECG",((int)x)+"");
-
-                if(x==0x1f){
-
-                    continue;
-
-                }else if(!bus){
-
-                        bus = true;
-
-                        Bus =  ((int)x);
-
-                        Log.d("ECG BUG", Bus+"");
-                    }else if(!address){
-
-                        address = true;
-
-                        Add = (int)x;
 
 
-                        Log.d("ECG Add", Add+"");
 
-                    }else if(!product){
+            if(testNumber<1){
 
-                        productId = (int)x;
+                return;
+            }
 
 
-                        Log.d("ECG Product", productId+"");
-                //        Log.d("ECG META","AD" + Add +" "+ Bus+" "+productId);
+                for (char x : message.toCharArray()) {
 
-                        if(productId == 1 || productId == 2){
+                 //   Log.d("ECG int", (int) (x) + "");
+
+
+                    if (x == 0x1f) {
+
+                        Log.d("ECG", "SEPRATOR");
+
+
+                    } else{
+
+                     //   Log.d("ECG int", (int)(x) + "");
+
+                        if(!bus){
+
+                            Bus = ((int)x);
+
+                            Log.d("ECG BUS", Bus + "");
+
+                            bus = true;
+
+                        }else if (!address){
+
+                            address = true;
+
+                            Add = (int) x;
+
+                            Log.d("ECG Add", Add + "");
+
+                        }else if(!product){
+
+                            productId = (int) x;
 
                             product = true;
 
-                            if(type==0){
+                            Log.d("ECG Product", productId + "");
 
-                                type = productId;
+                            if(productId ==0){
 
-                                DataBaseHandler.getInstance().getDB().ecgDao().updateType(ecgId,type);
+                                DataBaseHandler.getInstance().getDB().ecgDao().updateType(ecgId, type);
+                            }
+                            if(productId==1 && count == 0){
+
+                                count  = 2;
+                                
+                            }else if(productId ==2 && count == 0){
+
+                                count = 8;
                             }
 
-                        }
+                        }else if(count>0){
 
 
+                            if(second == 0){
 
-                    }else if(x=='\n' || x=='\3'|| x=='\r'){
+                                data = (((int)x)<<16) ;
 
+                                second++;
+                            }else if (second ==  1){
 
-                        bus = false;
-
-                        address = false;
-
-                        product = false;
-
-                        data = 0;
-
-                        second = 0;
-
-                    }else {
-
-
-                            if (second == 0) {
-
-                                data = (x<<16);
+                                data += (((int)x)<<8) ;
 
                                 second++;
 
-                            } else if (second == 1) {
+                            }else if (second  == 2){
 
-                                data += (x<<8);
+                                data +=  ((int)x);
 
-                                second ++;
-                            } else {
+                                count--;
 
-                                data += x;
+                                second = 0;
 
-                                second =0;
+                                updateFile(data + "");
 
-                                if(data>0){
+                                datas.add(data);
 
-                                    datas.add(data);
+                             //   Log.d("ECG Product last val", (int)x + "");
 
+                                Log.d("ECG Data",data+"");
 
-                                    updateFile(data+"");
-                                }
-
-
-                                data =0;
+                                data=0;
                             }
 
 
+
+                            if(count == 0){
+
+                                address = false;
+
+                                bus = false;
+
+                                product = false;
+
+                                testNumber--;
+                            }
+
+                        }
                     }
+
+
                 }
 
-
-
-
-
+            //    Log.d("ECG","END");
 
         });
 
@@ -224,10 +233,13 @@ public class ECGDataHandler implements DialogInterface {
 
         product = false;
 
+        count = 0;
+
         data = 0;
 
         second = 0;
         updateData();
+
     }
 
     @Override

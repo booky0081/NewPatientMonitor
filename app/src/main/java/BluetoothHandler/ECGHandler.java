@@ -31,6 +31,8 @@ public class ECGHandler extends BaseHandler {
 
     private int  x =0;
 
+
+
     @BindView(R.id.start_ecg_record)
     MaterialButton startButton;
 

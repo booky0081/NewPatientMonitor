@@ -68,13 +68,20 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
 
             profileManagementInterface = this;
 
-            Log.d("PROFILE", (String) profileManageButton.getText());
+         //   Log.d("PROFILE", (String) profileManageButton.getText());
 
             setProfileManageButton();
+
+
 
             setBluetoothConnectButton();
 
             bluetoothDialog.isConnected();
+
+            if(bluetoothDialog.isConnected()){
+
+                profileManageButton.setEnabled(true);
+            }
      //   }
 
     }
