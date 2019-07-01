@@ -236,6 +236,7 @@ public class History extends Activity {
                        //     Log.d("History",selectedTime + " "+selectPatient);
 
                             bloodPressureHistory.show();
+
                             bloodPressureHistoryAdapter.SetData(selectPatient,selectedTime);
 
 
@@ -249,6 +250,7 @@ public class History extends Activity {
                      //       Log.d("History",selectedTime + " "+selectPatient);
 
                             fluidHistory.show();
+
                             fluidHistoryAdapter.SetData(selectPatient,selectedTime);
 
                         }
@@ -261,10 +263,12 @@ public class History extends Activity {
                        //     Log.d("History",selectedTime + " "+selectPatient);
 
                             ECGHisory.show();
+
                             ecgHistoryAdapter.SetData(selectPatient,selectedTime);
 
                         }
                         break;
+
                         default: break;
 
                 }

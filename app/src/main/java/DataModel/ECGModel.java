@@ -37,6 +37,11 @@ public class ECGModel {
     @ColumnInfo(name = "stop_date")
     private String ended;
 
+    @SerializedName("type")
+    @Expose
+    @ColumnInfo(name = "type")
+    private int type;
+
     public int getId() {
         return id;
     }
@@ -75,6 +80,13 @@ public class ECGModel {
 
     public void setEnded(String ended) {
         this.ended = ended;
+    }
+
+    public void setType(int type){this.type = type;}
+
+    public int getType(){
+
+        return this.type;
     }
 }
 

@@ -1,7 +1,7 @@
 package Dialog;
 
-import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +66,7 @@ public class ECGHistoryAdapter extends ArrayAdapter<ECGModel> {
 
         this.ecgModelList = DataBaseHandler.getInstance().getDB().ecgDao().getHistory(patientId,date);
 
+        Log.d("History","data set changed");
         this.notifyDataSetChanged();
     }
 
@@ -77,6 +78,8 @@ public class ECGHistoryAdapter extends ArrayAdapter<ECGModel> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.ecg_history, parent, false);
 
         }
+
+        TextView fileName = convertView.findViewById(R.id.ecg_history_file);
 
         TextView startDate = convertView.findViewById(R.id.ecg_history_date);
 
@@ -95,6 +98,10 @@ public class ECGHistoryAdapter extends ArrayAdapter<ECGModel> {
 
             endDate.setText(ecgModel.getEnded());
 
+            fileName.setText(ecgModel.getFileId() +" type: "+ ecgModel.getType());
+
+            downloadBtn.setText("Upload");
+
             File[] files = context.getFilesDir().listFiles();
 
          //   Log.d("History","file size"+ files.length);
@@ -112,11 +119,13 @@ public class ECGHistoryAdapter extends ArrayAdapter<ECGModel> {
 
                         downloadBtn.setText("Uploading....");
 
-                        executor.execute(() -> {
+                        final MaterialButton downloadBTNFinal = downloadBtn;
+                      //  executor.execute(() -> {
 
                             ECGAPIClient ecgapiClient = new ECGAPIClient();
 
                             ecgapiClient.Upload(finalRecord, new APIClientInterface() {
+
                                 @Override
                                 public void onResponseData(Object object) {
 
@@ -127,19 +136,22 @@ public class ECGHistoryAdapter extends ArrayAdapter<ECGModel> {
                                 public void onReponse() {
 
 
-                                    ((Activity)context).runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
 
-                                            downloadBtn.setText("Upload");
 
-                                        }
-                                    });
+                                            downloadBTNFinal.setText("Upload");
+
+
 
                                 }
 
                                 @Override
                                 public void onError(String message) {
+
+
+
+                                            downloadBTNFinal.setText("Error Uploading");
+
+
 
 
                                 }
@@ -149,7 +161,10 @@ public class ECGHistoryAdapter extends ArrayAdapter<ECGModel> {
 
                                 }
                             });
-                        });
+
+
+                      //  });
+
                     });
 
                     break;

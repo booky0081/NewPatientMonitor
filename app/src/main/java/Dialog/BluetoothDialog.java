@@ -305,6 +305,17 @@ public class BluetoothDialog implements DeviceCallback, DiscoveryCallback {
 
     }
 
+    public boolean isConnected(){
+
+        if(bluetooth.isConnected()) {
+            this.onDeviceConnected(toBeConnected);
+
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     public void onDeviceDisconnected(BluetoothDevice device, String message) {
 

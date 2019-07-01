@@ -75,6 +75,8 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
             setProfileManageButton();
 
             setBluetoothConnectButton();
+
+            bluetoothDialog.isConnected();
      //   }
 
     }
@@ -120,7 +122,14 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
 
     protected void setBluetoothConnectButton() {
 
-        this.bluetoothConnectButton.setEnabled(false);
+        if(bluetoothDialog.isConnected()){
+
+            this.bluetoothConnectButton.setEnabled(true);
+        }else{
+
+            this.bluetoothConnectButton.setEnabled(false);
+        }
+
 
         this.bluetoothConnectButton.setOnClickListener(
                 v -> {
@@ -164,9 +173,11 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
 
         bluetoothStatusField.setText("Disconnected");
 
+        bluetoothConnectButton.setText("Connect");
+
         this.Stop();
 
-       // DataBaseHandler.getInstance().getDB().deviceDao().stop(new Date(System.currentTimeMillis()),currentDeviceMeta);
+        DataBaseHandler.getInstance().getDB().deviceDao().stop(new Date(System.currentTimeMillis()),currentDeviceMeta);
 
         this.profileManageButton.setEnabled(true);
 
@@ -180,6 +191,8 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
     public void onConnected(String deviceName) {
 
         bluetoothStatusField.setText("Connected");
+
+        bluetoothConnectButton.setText("Disconnect");
 
         isRunning = true;
 

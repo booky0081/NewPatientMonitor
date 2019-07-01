@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.google.android.material.button.MaterialButton;
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -88,12 +87,19 @@ public class ECGHandler extends BaseHandler {
                 if(recording){
 
                     bluetoothDialog.send(stop);
+
+                    recording = false;
+
                 }else{
                     bluetoothDialog.send(start);
 
+                    recording = true;
+
+                    Log.d("ECG","SEND");
+
                 }
 
-                recording = !recording;
+
 
             }
         });
@@ -103,10 +109,6 @@ public class ECGHandler extends BaseHandler {
         mSeries1.setDrawDataPoints(true);
 
         ecgGraph.addSeries(mSeries1);
-
-        Viewport viewport = ecgGraph.getViewport();
-
-
 
         return view;
     }
@@ -131,13 +133,20 @@ public class ECGHandler extends BaseHandler {
         x=0;
 
         ECGDataHandler.getInstance().setDeviceMetaId(currentDeviceMeta);
-
+        Log.d("CurrentDevice",currentDeviceMeta+"");
        resetData();
     }
 
     @Override
     protected void Stop() {
 
+        ecgGraph.clearSecondScale();
+
+        mSeries1.resetData(new DataPoint[] {
+                new DataPoint(0, 0)
+
+        });
+        x = 0;
     }
 
     private void resetData(){

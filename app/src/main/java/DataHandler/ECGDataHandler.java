@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
@@ -44,20 +43,24 @@ public class ECGDataHandler implements DialogInterface {
 
    private boolean product = false;
 
+   private boolean start  = false;
+
    private int second = 0;
 
    private int productId = 0;
 
    private  long data = 0;
 
+   private long Add = 0;
+
+   private long Bus = 0;
+
+   private int type = 0;
+
+   private long ecgId = 0;
+
    private Executor executor = Executors.newSingleThreadExecutor();
 
-
-
-
-
-    Hashtable<String, String> character
-            = new Hashtable<String, String>();
 
 
     private int xtest = 0;
@@ -79,11 +82,6 @@ public class ECGDataHandler implements DialogInterface {
 
         ecgParser = new ECGParser();
 
-        character.put("\2","START");
-
-        character.put("\3","END");
-
-
 
 
     }
@@ -93,39 +91,56 @@ public class ECGDataHandler implements DialogInterface {
     @Override
     public void onMessage(String message) {
 
-
+    //    Log.d("ECG Data",message);
         executor.execute(() -> {
 
             for (char x : message.toCharArray()) {
 
+                Log.d("ECG int",(x)+"");
+                Log.d("ECG",((int)x)+"");
 
-
-                if(x == 0x1f) {
+                if(x==0x1f){
 
                     continue;
 
-                }else {
-
-                    if(!bus && x=='\2'){
+                }else if(!bus){
 
                         bus = true;
 
-                        Log.d("Bus",((int)x)+"");
+                        Bus =  ((int)x);
 
+                        Log.d("ECG BUG", Bus+"");
                     }else if(!address){
 
                         address = true;
 
-                        Log.d("Address",((int)x)+"");
+                        Add = (int)x;
+
+
+                        Log.d("ECG Add", Add+"");
 
                     }else if(!product){
 
-                        productId =( int )x;
+                        productId = (int)x;
 
 
-                        Log.d("Product",((int)x)+"");
+                        Log.d("ECG Product", productId+"");
+                //        Log.d("ECG META","AD" + Add +" "+ Bus+" "+productId);
 
-                        product = true;
+                        if(productId == 1 || productId == 2){
+
+                            product = true;
+
+                            if(type==0){
+
+                                type = productId;
+
+                                DataBaseHandler.getInstance().getDB().ecgDao().updateType(ecgId,type);
+                            }
+
+                        }
+
+
 
                     }else if(x=='\n' || x=='\3'|| x=='\r'){
 
@@ -160,9 +175,14 @@ public class ECGDataHandler implements DialogInterface {
 
                                 second =0;
 
-                                datas.add(data);
+                                if(data>0){
 
-                                updateFile(data+"");
+                                    datas.add(data);
+
+
+                                    updateFile(data+"");
+                                }
+
 
                                 data =0;
                             }
@@ -171,7 +191,7 @@ public class ECGDataHandler implements DialogInterface {
                     }
                 }
 
-            }
+
 
 
 
@@ -196,13 +216,36 @@ public class ECGDataHandler implements DialogInterface {
     @Override
     public void onDisconnected() {
 
+        type=0;
+
+        bus = false;
+
+        address = false;
+
+        product = false;
+
+        data = 0;
+
+        second = 0;
         updateData();
     }
 
     @Override
     public void onConnected(String device) {
 
-      //  Log.d("ECG","Inserted");
+        Log.d("ECG","Inserted");
+
+        type=0;
+
+        bus = false;
+
+        address = false;
+
+        product = false;
+
+        data = 0;
+
+        second = 0;
         try {
 
             insertData();
@@ -210,6 +253,8 @@ public class ECGDataHandler implements DialogInterface {
 
 
         } catch (FileNotFoundException e) {
+
+            Log.d("Test",e.getMessage());
             e.printStackTrace();
         }
 
@@ -243,11 +288,11 @@ public class ECGDataHandler implements DialogInterface {
      //   Log.d("ECG",deviceMetaId+"");
         ecgModel.setFileId(currentTimeString);
 
-      //  ecgModel.setMetaId(deviceMetaId);
+        ecgModel.setMetaId(deviceMetaId);
 
-        Long ecgId = DataBaseHandler.getInstance().getDB().ecgDao().insertECG(ecgModel);
+        ecgId = DataBaseHandler.getInstance().getDB().ecgDao().insertECG(ecgModel);
 
-
+        Log.d("ECG","nserted"+ecgId +" "+deviceMetaId);
 
         datas = new CopyOnWriteArrayList<>();
 

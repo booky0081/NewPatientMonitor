@@ -16,7 +16,7 @@ import Helper.TimestampConverter;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-@androidx.room.Database(entities =  {HospitalModel.class,PatientModel.class,DeviceModel.class, BloodPressureModel.class, FluidModel.class, ECGModel.class},version = 6, exportSchema = false)
+@androidx.room.Database(entities =  {HospitalModel.class,PatientModel.class,DeviceModel.class, BloodPressureModel.class, FluidModel.class, ECGModel.class},version = 7, exportSchema = false)
 @TypeConverters({TimestampConverter.class})
 public abstract class Database  extends RoomDatabase {
 

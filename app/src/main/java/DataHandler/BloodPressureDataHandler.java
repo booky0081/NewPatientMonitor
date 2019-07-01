@@ -34,6 +34,8 @@ public class BloodPressureDataHandler implements DialogInterface {
 
             return ourInstance;
     }
+
+
     private BloodPressureDataHandler(){
 
         bloodPressureModelArrayList = new ArrayList<>();

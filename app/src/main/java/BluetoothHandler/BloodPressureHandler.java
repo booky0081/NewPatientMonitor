@@ -57,7 +57,7 @@ public class BloodPressureHandler extends BaseHandler {
 
         unbinder = ButterKnife.bind(this,view);
 
-        Log.d("BloodPressure","Create");
+  //      Log.d("BloodPressure","Create");
 
         return view;
 
@@ -80,6 +80,8 @@ public class BloodPressureHandler extends BaseHandler {
         super.onResume();
 
         SetUp(getActivity());
+
+   //     bluetoothDialog.isConnected();
     }
 
     @Override
