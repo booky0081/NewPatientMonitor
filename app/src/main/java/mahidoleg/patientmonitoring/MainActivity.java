@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
                     return fluidHandler;
 
                 case 2:
-                    ecgHandler = ECGHandler.newInstance(3,"ECG");
+                    ecgHandler = ECGHandler.newInstance(3,"Vital Sign");
 
                     ecgHandler.setBluetoothDialog(ecgBlueooth);
 
@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements OnBMClickListener
                 case 1:
                     return "WaterPressure";
                 case 2:
-                    return "EKG";
+                    return "Vital Sign";
             }
 
             return null;
