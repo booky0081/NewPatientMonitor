@@ -20,7 +20,7 @@ import DataHandler.SyncDataHandler;
 import Database.DataBaseHandler;
 import Dialog.BloodPressureBluetoothDialog;
 import Dialog.BluetoothDialog;
-import History.History;
+import history.History;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;

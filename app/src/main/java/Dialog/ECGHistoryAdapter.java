@@ -66,7 +66,7 @@ public class ECGHistoryAdapter extends ArrayAdapter<ECGModel> {
 
         this.ecgModelList = DataBaseHandler.getInstance().getDB().ecgDao().getHistory(patientId,date);
 
-        Log.d("History","data set changed");
+        Log.d("history","data set changed");
         this.notifyDataSetChanged();
     }
 

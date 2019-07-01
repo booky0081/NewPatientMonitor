@@ -1,4 +1,4 @@
-package History;
+package history;
 
 import android.app.Activity;
 import android.os.Bundle;

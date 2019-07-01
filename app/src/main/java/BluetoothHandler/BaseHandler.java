@@ -40,10 +40,6 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
     @BindView(R.id.blood_pressure_connect_button)
     MaterialButton bluetoothConnectButton;
 
-    /*
-    @BindView(R.id.blood_pressure_history_button)
-    MaterialButton historyButton;
-    */
 
     private ProfileManagement profileManagement = null;
 
@@ -71,6 +67,8 @@ public abstract class BaseHandler extends Fragment implements DialogInterface ,P
             profileManagement = new ProfileManagement(activity);
 
             profileManagementInterface = this;
+
+            Log.d("PROFILE", (String) profileManageButton.getText());
 
             setProfileManageButton();
 
